@@ -37,7 +37,7 @@ class FilmController extends Controller
     }
 
     /**
-     * @SWG\POST(path="/film",
+     * @SWG\Post(path="/film",
      *     tags={"film"},
      *     summary="add 1 film.",
      *     operationId="addFilm",

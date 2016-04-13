@@ -37,7 +37,7 @@ class GenreController extends Controller
     }
 
     /**
-     * @SWG\POST(path="/genre",
+     * @SWG\Post(path="/genre",
      *     tags={"genre"},
      *     summary="add 1 film.",
      *     operationId="addGenre",
