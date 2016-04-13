@@ -13,7 +13,7 @@ class GenreController extends Controller
      * @SWG\Get(path="/genre",
      *   tags={"genre"},
      *   operationId="getGenre",
-     *   summary="Display a list of films.",
+     *   summary="Display a list of genres.",
      *   description="This can only be done by the logged in user.",
      *   produces={"application/json"},
      *   @SWG\Response(
@@ -21,7 +21,7 @@ class GenreController extends Controller
      *     description="successful operation",
      *     @SWG\Schema(
      *      type="array",
-     *      @SWG\Items(ref="#/definitions/Film")
+     *      @SWG\Items(ref="#/definitions/Genre")
      *     ),
      *   ),
      * )
@@ -39,7 +39,7 @@ class GenreController extends Controller
     /**
      * @SWG\Post(path="/genre",
      *     tags={"genre"},
-     *     summary="add 1 film.",
+     *     summary="add a single genre.",
      *     operationId="addGenre",
      *     description="This is to insert a genre",
      *     consumes={"application/json"},
@@ -56,7 +56,7 @@ class GenreController extends Controller
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Film")
+     *              @SWG\Items(ref="#/definitions/Genre")
      *          ),
      *      ),
      *   @SWG\Response(
@@ -86,7 +86,7 @@ class GenreController extends Controller
         $genre->nom = $request->nom;
         $genre->save();
         return response()->json(
-            ['id_film' => $genre->id_film],
+            ['id_genre' => $genre->id_genre],
             201
         );
     }
@@ -114,7 +114,7 @@ class GenreController extends Controller
      *          ),
      *      ),
      *      @SWG\Response(response=400, description="Invalid ID supplied"),
-     *      @SWG\Response(response=404, description="Film not found"),
+     *      @SWG\Response(response=404, description="Genre not found"),
      * )
      *
      * Display the specified resource.
@@ -129,7 +129,7 @@ class GenreController extends Controller
 
     /**
      * @SWG\Put(
-     *     path="/film/{genreId}",
+     *     path="/genre/{genreId}",
      *     tags={"genre"},
      *     operationId="updateGenre",
      *     summary="Update an existing genre",
@@ -154,7 +154,7 @@ class GenreController extends Controller
      *         description="Invalid ID supplied",
      *         @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Film")
+     *              @SWG\Items(ref="#/definitions/Genre")
      *         ),
      *     ),
      *     @SWG\Response(
@@ -163,9 +163,8 @@ class GenreController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=404,
-     *         description="Film not found",
+     *         description="Genre not found",
      *     ),
-     *     security={{"petstore_auth":{"write:films", "read:films"}}}
      * )
      *
      * Show the form for editing the specified resource.
@@ -206,6 +205,37 @@ class GenreController extends Controller
     }
 
     /**
+     * @SWG\Get(
+     *     path="/genre/getFilmsForGenre/{id}",
+     *     summary="Finds film for genre",
+     *     tags={"genre"},
+     *     description="return a list of film for genre",
+     *     operationId="getFilmsForGenre",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         type="integer",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/Film")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Invalid Id supplied",
+     *     ),
+     *      @SWG\Response(
+     *         response="404",
+     *         description="genre not found",
+     *     ),
+     * )
      * @param  int $id
      * @return \Illuminate\Http\Response
      */

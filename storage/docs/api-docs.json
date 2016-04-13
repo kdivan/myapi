@@ -96,14 +96,16 @@
                         "in": "formData",
                         "description": "the fields you want to update",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "format": "date"
                     },
                     {
                         "name": "date_fin_affiche",
                         "in": "formData",
                         "description": "the fields you want to update",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "format": "date"
                     },
                     {
                         "name": "duree_minutes",
@@ -141,7 +143,7 @@
                 "tags": [
                     "film"
                 ],
-                "summary": "show 1 row",
+                "summary": "show a single Film",
                 "description": "Show one row",
                 "operationId": "getFilmById",
                 "produces": [
@@ -191,8 +193,8 @@
                     {
                         "name": "filmId",
                         "in": "path",
-                        "description": "Pet object that needs to be added to the store",
-                        "required": false,
+                        "description": "Film object that needs to be added to the store",
+                        "required": true,
                         "type": "integer"
                     },
                     {
@@ -268,21 +270,13 @@
                     "404": {
                         "description": "Film not found"
                     }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:films",
-                            "read:films"
-                        ]
-                    }
-                ]
+                }
             },
             "delete": {
                 "tags": [
                     "film"
                 ],
-                "summary": "Delete purchase order by ID",
+                "summary": "Delete purchase Film by ID",
                 "description": "For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
                 "operationId": "deleteFilm",
                 "produces": [
@@ -292,7 +286,7 @@
                     {
                         "name": "filmId",
                         "in": "path",
-                        "description": "ID of the order that needs to be deleted",
+                        "description": "ID of the film that needs to be deleted",
                         "required": true,
                         "type": "string"
                     }
@@ -302,7 +296,48 @@
                         "description": "Invalid ID supplied"
                     },
                     "404": {
-                        "description": "Order not found"
+                        "description": "Film not found"
+                    }
+                }
+            }
+        },
+        "/film/getFilmWithGenre/{id}": {
+            "get": {
+                "tags": [
+                    "film"
+                ],
+                "summary": "Finds film with genre",
+                "description": "return a film with genre",
+                "operationId": "getFilmWithGenre",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Film"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Id supplied"
+                    },
+                    "404": {
+                        "description": "genre not found"
                     }
                 }
             }
@@ -312,7 +347,7 @@
                 "tags": [
                     "genre"
                 ],
-                "summary": "Display a list of films.",
+                "summary": "Display a list of genres.",
                 "description": "This can only be done by the logged in user.",
                 "operationId": "getGenre",
                 "produces": [
@@ -324,7 +359,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Film"
+                                "$ref": "#/definitions/Genre"
                             }
                         }
                     }
@@ -334,7 +369,7 @@
                 "tags": [
                     "genre"
                 ],
-                "summary": "add 1 film.",
+                "summary": "add a single genre.",
                 "description": "This is to insert a genre",
                 "operationId": "addGenre",
                 "consumes": [
@@ -358,7 +393,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Film"
+                                "$ref": "#/definitions/Genre"
                             }
                         }
                     },
@@ -402,39 +437,10 @@
                         "description": "Invalid ID supplied"
                     },
                     "404": {
-                        "description": "Film not found"
+                        "description": "Genre not found"
                     }
                 }
             },
-            "delete": {
-                "tags": [
-                    "genre"
-                ],
-                "summary": "Delete genre by ID",
-                "operationId": "deleteGenre",
-                "produces": [
-                    "application/json"
-                ],
-                "parameters": [
-                    {
-                        "name": "genreId",
-                        "in": "path",
-                        "description": "ID of the genre that needs to be deleted",
-                        "required": true,
-                        "type": "integer"
-                    }
-                ],
-                "responses": {
-                    "400": {
-                        "description": "Invalid ID supplied"
-                    },
-                    "404": {
-                        "description": "Order not found"
-                    }
-                }
-            }
-        },
-        "/film/{genreId}": {
             "put": {
                 "tags": [
                     "genre"
@@ -469,7 +475,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Film"
+                                "$ref": "#/definitions/Genre"
                             }
                         }
                     },
@@ -477,17 +483,77 @@
                         "description": "Invalid ID supplied"
                     },
                     "404": {
-                        "description": "Film not found"
+                        "description": "Genre not found"
                     }
-                },
-                "security": [
+                }
+            },
+            "delete": {
+                "tags": [
+                    "genre"
+                ],
+                "summary": "Delete genre by ID",
+                "operationId": "deleteGenre",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
                     {
-                        "petstore_auth": [
-                            "write:films",
-                            "read:films"
-                        ]
+                        "name": "genreId",
+                        "in": "path",
+                        "description": "ID of the genre that needs to be deleted",
+                        "required": true,
+                        "type": "integer"
                     }
-                ]
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Order not found"
+                    }
+                }
+            }
+        },
+        "/genre/getFilmsForGenre/{id}": {
+            "get": {
+                "tags": [
+                    "genre"
+                ],
+                "summary": "Finds film for genre",
+                "description": "return a list of film for genre",
+                "operationId": "getFilmsForGenre",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Film"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Id supplied"
+                    },
+                    "404": {
+                        "description": "genre not found"
+                    }
+                }
             }
         }
     },
@@ -497,8 +563,7 @@
             "properties": {
                 "id_film": {
                     "type": "integer",
-                    "format": "int64",
-                    "default": 4554
+                    "format": "int64"
                 },
                 "titre": {
                     "type": "string"
@@ -507,21 +572,21 @@
                     "type": "string"
                 },
                 "date_debut_affiche": {
-                    "type": "date",
-                    "default": "2011-01-12"
+                    "type": "string",
+                    "format": "date"
                 },
                 "date_fin_affiche": {
-                    "type": "date",
-                    "format": "date",
-                    "default": "2011-01-12"
+                    "type": "string",
+                    "format": "date"
                 },
                 "duree_minutes": {
-                    "type": "integer",
-                    "default": 180
+                    "type": "integer"
                 },
                 "annee_production": {
-                    "type": "integer",
-                    "default": 2011
+                    "type": "integer"
+                },
+                "genre": {
+                    "$ref": "#/definitions/Genre"
                 }
             },
             "xml": {

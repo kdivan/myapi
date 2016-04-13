@@ -78,6 +78,7 @@ class FilmController extends Controller
      *         description="the fields you want to update",
      *         required=false,
      *         type="string",
+     *         format="date",
      *     ),
      *     @SWG\Parameter(
      *         name="date_fin_affiche",
@@ -85,6 +86,7 @@ class FilmController extends Controller
      *         description="the fields you want to update",
      *         required=false,
      *         type="string",
+     *         format="date",
      *     ),
      *     @SWG\Parameter(
      *         name="duree_minutes",
@@ -155,7 +157,7 @@ class FilmController extends Controller
     /**
      * @SWG\Get(path="/film/{filmId}",
      *      tags={"film"},
-     *      summary="show 1 row",
+     *      summary="show a single Film",
      *      operationId="getFilmById",
      *      description="Show one row",
      *      produces={"application/json"},
@@ -195,7 +197,7 @@ class FilmController extends Controller
         //Test si le film exist
         if (empty($films)) {
             return response()->json(
-                ['error' => 'this film does not exist bitch'],
+                ['error' => 'the Id supplies doesn\'t exit'],
                 404
             );
         }
@@ -214,8 +216,8 @@ class FilmController extends Controller
      *     @SWG\Parameter(
      *         name="filmId",
      *         in="path",
-     *         description="Pet object that needs to be added to the store",
-     *         required=false,
+     *         description="Film object that needs to be added to the store",
+     *         required=true,
      *         type="integer"
      *     ),
      *     @SWG\Parameter(
@@ -290,7 +292,6 @@ class FilmController extends Controller
      *         response=404,
      *         description="Film not found",
      *     ),
-     *     security={{"petstore_auth":{"write:films", "read:films"}}}
      * )
      * Update the specified resource in storage.
      *
@@ -328,19 +329,19 @@ class FilmController extends Controller
     /**
      * @SWG\Delete(path="/film/{filmId}",
      *   tags={"film"},
-     *   summary="Delete purchase order by ID",
+     *   summary="Delete purchase Film by ID",
      *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
      *   operationId="deleteFilm",
      *   produces={"application/json"},
      *   @SWG\Parameter(
      *     name="filmId",
      *     in="path",
-     *     description="ID of the order that needs to be deleted",
+     *     description="ID of the film that needs to be deleted",
      *     required=true,
      *     type="string"
      *   ),
      *   @SWG\Response(response=400, description="Invalid ID supplied"),
-     *   @SWG\Response(response=404, description="Order not found")
+     *   @SWG\Response(response=404, description="Film not found")
      * )
      * Remove the specified resource from storage.
      *
@@ -370,6 +371,37 @@ class FilmController extends Controller
     }
 
     /**
+     * @SWG\Get(
+     *     path="/film/getFilmWithGenre/{id}",
+     *     summary="Finds film with genre",
+     *     tags={"film"},
+     *     description="return a film with genre",
+     *     operationId="getFilmWithGenre",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         type="integer",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/Film")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Invalid Id supplied",
+     *     ),
+     *      @SWG\Response(
+     *         response="404",
+     *         description="genre not found",
+     *     ),
+     * )
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
@@ -381,8 +413,7 @@ class FilmController extends Controller
                 400
             );
         }
-
-        $films = Film::find($id);
+        $films = Film::with('Genre')->find($id);
         if (empty($films)) {
             return response()->json(
                 ['error' => 'genre not found'],
@@ -390,7 +421,8 @@ class FilmController extends Controller
             );
         }
 
-        return $films->genre;
+        return $films;
 
     }
+
 }
