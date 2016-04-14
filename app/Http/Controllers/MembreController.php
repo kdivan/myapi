@@ -56,7 +56,7 @@ class MembreController extends Controller
      *         name="id_abonnement",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
@@ -185,7 +185,7 @@ class MembreController extends Controller
      *         name="id_abonnement",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
