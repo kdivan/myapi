@@ -24,7 +24,8 @@ class Salle extends Model
 
     protected $fillable = ['numero_salle', 'nom_salle', 'etage_salle', 'places'];
 
-    public function seances() {
+    public function seances()
+    {
         return $this->hasMany('App\Seance', 'id_salle');
     }
 }

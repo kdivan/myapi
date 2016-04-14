@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Input;
 
 class SeanceController extends Controller
 {
@@ -131,7 +132,7 @@ class SeanceController extends Controller
                 422
             );
         }
-        $seance = Seance::create($request);
+        $seance = Seance::create(Input::all());
         $seance->save();
         return response()->json(
             ['Seance' => $seance],
@@ -182,7 +183,7 @@ class SeanceController extends Controller
         //Test si le film exist
         if (empty($seance)) {
             return response()->json(
-                ['error' => 'this film does not exist bitch'],
+                ['error' => 'this seance does not exist'],
                 404
             );
         }
