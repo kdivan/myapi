@@ -40,9 +40,9 @@ class PersonneController extends Controller
     /**
      * @SWG\Post(path="/personne",
      *     tags={"personne"},
-     *     summary="add 1 personne.",
+     *     summary="add a personne.",
      *     operationId="addPersonne",
-     *     description="This is to insert a personne",
+     *     description="This is to insert a personne in the database",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -84,7 +84,7 @@ class PersonneController extends Controller
      *     @SWG\Parameter(
      *         name="cpostal",
      *         in="formData",
-     *         description="Personne's code postal you want to update",
+     *         description="Personne's zipcode you want to update",
      *         required=true,
      *         type="string",
      *     ),
@@ -151,9 +151,9 @@ class PersonneController extends Controller
     /**
      * @SWG\Get(path="/personne/{personneId}",
      *      tags={"personne"},
-     *      summary="show 1 row",
+     *      summary="show a personne",
      *      operationId="getPersonneById",
-     *      description="Show one Personne",
+     *      description="Show a Personne with ID provided",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="personneId",
@@ -205,7 +205,7 @@ class PersonneController extends Controller
      *     tags={"personne"},
      *     operationId="updatePersonne",
      *     summary="Update an existing personne",
-     *     description="",
+     *     description="To update an existing personne with ID provided",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -254,14 +254,14 @@ class PersonneController extends Controller
      *     @SWG\Parameter(
      *         name="cpostal",
      *         in="formData",
-     *         description="Personne's code postal you want to update",
+     *         description="Personne's zipcode you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="ville",
      *         in="formData",
-     *         description="Personne's ville you want to update",
+     *         description="Personne's city you want to update",
      *         required=false,
      *         type="string",
      *     ),
@@ -323,8 +323,8 @@ class PersonneController extends Controller
     /**
      * @SWG\Delete(path="/personne/{personneId}",
      *   tags={"personne"},
-     *   summary="Delete purchase order by ID",
-     *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
+     *   summary="Delete a personne",
+     *   description="To delete a personne with ID provided",
      *   operationId="deletePersonne",
      *   produces={"application/json"},
      *   @SWG\Parameter(
