@@ -121,8 +121,8 @@ class SeanceController extends Controller
             'id_personne_ouvreur' => 'exists:personne,id_personne',
             'id_personne_technicien' => 'exists:personne,id_personne',
             'id_personne_menage' => 'exists:personne,id_personne',
-            'debut_seance' => 'date',
-            'fin_seance' => 'date',
+            'debut_seance' => 'date_format:Y-m-d H:i:s|after:now|before:fin_seance',
+            'fin_seance' => 'date_format:Y-m-d H:i:s|after:debut_seance',
         ]);
 
         if ($validator->fails()) {
@@ -287,6 +287,24 @@ class SeanceController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //Validation des parametres a sauvegarder
+        $validator = Validator::make($request->all(), [
+            'id_film' => 'exists:film,id_film',
+            'id_salle' => 'exists:salle,id_salle',
+            'id_personne_ouvreur' => 'exists:personne,id_personne',
+            'id_personne_technicien' => 'exists:personne,id_personne',
+            'id_personne_menage' => 'exists:personne,id_personne',
+            'debut_seance' => 'date',
+            'fin_seance' => 'date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->errors()->all()],
+                422
+            );
+        }
+
         if (!is_numeric($id)) {
             return response()->json(
                 ['error' => 'Invalid ID supplied'],
@@ -301,18 +319,44 @@ class SeanceController extends Controller
                 404
             );
         }
-        $seance->titre = $request->titre;
-        $seance->resum = $request->resum;
-        $seance->id_genre = $request->id_genre;
-        $seance->id_distributeur = $request->id_distributeur;
-        $films->date_debut_affiche = $request->date_debut_affiche;
-        $films->date_fin_affiche = $request->date_fin_affiche;
-        $films->duree_minutes = $request->duree_minutes;
-        $films->annee_production = $request->annee_production;
-        $films->save();
+
+        if (null !== $request->id_film)
+        {
+            $seance->id_film = $request->id_film;
+        }
+
+        $seance->id_salle = $request->id_salle;
+        $seance->id_personne_ouvreur = $request->id_personne_ouvreur;
+        $seance->id_personne_technicien = $request->id_personne_technicien;
+        $seance->id_personne_menage = $request->id_personne_menage;
+        $seance->debut_seance = $request->debut_seance;
+        $seance->fin_seance = $request->fin_seance;
+        $seance->save();
+
     }
 
 
+    /**
+     * @SWG\Delete(path="/seance/{seanceId}",
+     *   tags={"seance"},
+     *   summary="Delete seance by id",
+     *   operationId="deleteSeance",
+     *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     name="reductionId",
+     *     in="path",
+     *     description="ID of the reduction that needs to be deleted",
+     *     required=true,
+     *     type="string"
+     *   ),
+     *   @SWG\Response(response=400, description="Invalid ID supplied"),
+     *   @SWG\Response(response=404, description="Order not found")
+     * )
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
         if (!is_numeric($id)) {
@@ -321,41 +365,17 @@ class SeanceController extends Controller
                 400
             );
         }
-        $films = Film::find($id);
-        if (empty($films)) {
+        $seance = Seance::find($id);
+        if (empty($seance)) {
             return response()->json(
                 ['error' => 'there is no film for this id'],
                 404
             );
         }
-        $films->delete();
+        $seance->delete();
         return response()->json(
             ['message' => "resource deleted successfully"],
             200
         );
-    }
-
-    /**
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function getFilmWithGenre($id)
-    {
-        if (!is_numeric($id)) {
-            return response()->json(
-                ['error' => 'Invalid ID supplied'],
-                400
-            );
-        }
-
-        $films = Film::find($id);
-        if (empty($films)) {
-            return response()->json(
-                ['error' => 'genre not found'],
-                404
-            );
-        }
-
-        return $films->genre;
     }
 }
