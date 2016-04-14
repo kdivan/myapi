@@ -26,6 +26,259 @@
         "application/json"
     ],
     "paths": {
+        "/distributeur": {
+            "get": {
+                "tags": [
+                    "distributeur"
+                ],
+                "summary": "Display a list of distributeurs.",
+                "description": "This can only be done by the logged in user.",
+                "operationId": "getDistributeur",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Distributeur"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "distributeur"
+                ],
+                "summary": "add 1 distributeur.",
+                "description": "This is to insert a distributor",
+                "operationId": "addDistributeur",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "nom",
+                        "in": "formData",
+                        "description": "the field name you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "telephone",
+                        "in": "formData",
+                        "description": "the field telephone you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "adresse",
+                        "in": "formData",
+                        "description": "the field adresse you want to update",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "cpostal",
+                        "in": "formData",
+                        "description": "the fields you want to update",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "ville",
+                        "in": "formData",
+                        "description": "the field ville you want to update",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "pays",
+                        "in": "formData",
+                        "description": "the field pays you want to update",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Distributeur"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/distributeur/{distributeurId}": {
+            "get": {
+                "tags": [
+                    "distributeur"
+                ],
+                "summary": "show 1 row",
+                "description": "Show one row of distributor",
+                "operationId": "getDistributeurById",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "distributeurId",
+                        "in": "path",
+                        "description": "ID of distributor that needs to be fetched",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Distributeur"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Distributeur not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "distributeur"
+                ],
+                "summary": "Update an existing distributeur",
+                "description": "",
+                "operationId": "updateDistributeur",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "distributeurId",
+                        "in": "path",
+                        "description": "Update the information of a distributeur",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "nom",
+                        "in": "formData",
+                        "description": "the field nom you want to update",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "telephone",
+                        "in": "formData",
+                        "description": "the field telephone you want to update",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "adresse",
+                        "in": "formData",
+                        "description": "the field adresse you want to update",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "cpostal",
+                        "in": "formData",
+                        "description": "the field cpostal you want to update",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ville",
+                        "in": "formData",
+                        "description": "the field ville you want to update",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "pays",
+                        "in": "formData",
+                        "description": "the field pays you want to update",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Invalid ID supplied",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Distributeur"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Distributeur not found"
+                    }
+                },
+                "security": [
+                    {
+                        "petstore_auth": [
+                            "write:distributeur",
+                            "read:distributeur"
+                        ]
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "distributeur"
+                ],
+                "summary": "Delete distributeur order by ID",
+                "description": "Delete a distributeur with his ID",
+                "operationId": "deleteDistributeur",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "distributeurId",
+                        "in": "path",
+                        "description": "ID of the distributeur that needs to be deleted",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Order not found"
+                    }
+                }
+            }
+        },
         "/film": {
             "get": {
                 "tags": [
@@ -96,16 +349,14 @@
                         "in": "formData",
                         "description": "the fields you want to update",
                         "required": false,
-                        "type": "string",
-                        "format": "date"
+                        "type": "string"
                     },
                     {
                         "name": "date_fin_affiche",
                         "in": "formData",
                         "description": "the fields you want to update",
                         "required": false,
-                        "type": "string",
-                        "format": "date"
+                        "type": "string"
                     },
                     {
                         "name": "duree_minutes",
@@ -143,7 +394,7 @@
                 "tags": [
                     "film"
                 ],
-                "summary": "show a single Film",
+                "summary": "show 1 row",
                 "description": "Show one row",
                 "operationId": "getFilmById",
                 "produces": [
@@ -276,7 +527,7 @@
                 "tags": [
                     "film"
                 ],
-                "summary": "Delete purchase Film by ID",
+                "summary": "Delete purchase order by ID",
                 "description": "For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
                 "operationId": "deleteFilm",
                 "produces": [
@@ -286,7 +537,7 @@
                     {
                         "name": "filmId",
                         "in": "path",
-                        "description": "ID of the film that needs to be deleted",
+                        "description": "ID of the order that needs to be deleted",
                         "required": true,
                         "type": "string"
                     }
@@ -296,7 +547,7 @@
                         "description": "Invalid ID supplied"
                     },
                     "404": {
-                        "description": "Film not found"
+                        "description": "Order not found"
                     }
                 }
             }
@@ -1117,35 +1368,77 @@
         }
     },
     "definitions": {
+        "Distributeur": {
+            "required": [
+                "id_distributeur",
+                "nom",
+                "telephone"
+            ],
+            "properties": {
+                "id_distributeur": {
+                    "type": "integer",
+                    "format": "int64",
+                    "default": 4554
+                },
+                "nom": {
+                    "type": "string"
+                },
+                "telephone": {
+                    "type": "string"
+                },
+                "adresse": {
+                    "type": "string"
+                },
+                "cpostal": {
+                    "type": "integer"
+                },
+                "ville": {
+                    "type": "string"
+                },
+                "pays": {
+                    "type": "string"
+                }
+            },
+            "xml": {
+                "name": "Distributeur"
+            }
+        },
         "Film": {
             "required": true,
             "properties": {
                 "id_film": {
                     "type": "integer",
-                    "format": "int64"
+                    "format": "int64",
+                    "default": 4554
                 },
                 "titre": {
                     "type": "string"
+                },
+                "id_genre": {
+                    "type": "integer"
+                },
+                "id_distributeur": {
+                    "type": "integer"
                 },
                 "resum": {
                     "type": "string"
                 },
                 "date_debut_affiche": {
-                    "type": "string",
-                    "format": "date"
+                    "type": "date",
+                    "default": "2011-01-12"
                 },
                 "date_fin_affiche": {
-                    "type": "string",
-                    "format": "date"
+                    "type": "date",
+                    "format": "date",
+                    "default": "2011-01-12"
                 },
                 "duree_minutes": {
-                    "type": "integer"
+                    "type": "integer",
+                    "default": 180
                 },
                 "annee_production": {
-                    "type": "integer"
-                },
-                "genre": {
-                    "$ref": "#/definitions/Genre"
+                    "type": "integer",
+                    "default": 2011
                 }
             },
             "xml": {
@@ -1190,7 +1483,7 @@
                 }
             },
             "xml": {
-                "name": "Salle"
+                "name": "Salles"
             }
         }
     }
