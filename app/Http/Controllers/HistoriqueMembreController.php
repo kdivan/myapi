@@ -22,7 +22,7 @@ class HistoriqueMembreController extends Controller
      *     description="successful operation",
      *     @SWG\Schema(
      *      type="array",
-     *      @SWG\Items(ref="#/definitions/historiqueMembre")
+     *      @SWG\Items(ref="#/definitions/HistoriqueMembre")
      *     ),
      *   ),
      * )
@@ -73,7 +73,7 @@ class HistoriqueMembreController extends Controller
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Distributeur")
+     *              @SWG\Items(ref="#/definitions/HistoriqueMembre")
      *          ),
      *      ),
      *   @SWG\Response(
@@ -148,7 +148,7 @@ class HistoriqueMembreController extends Controller
             );
         }
         $historiqueMembre = HistoriqueMembre::find($id);
-        //Test si le film exist
+
         if (empty($historiqueMembre)) {
             return response()->json(
                 ['error' => 'this historique does not exist !'],
