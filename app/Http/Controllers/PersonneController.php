@@ -2,29 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Distributeur;
+use App\Personne;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
-class DistributeurController extends Controller
+class PersonneController extends Controller
 {
-
     /**
-     * @SWG\Get(path="/distributeur",
-     *   tags={"distributeur"},
-     *   operationId="getDistributeur",
-     *   summary="Display a list of distributeurs.",
-     *   description="This can only be done by the logged in user.",
+     * @SWG\Get(path="/personne",
+     *   tags={"personne"},
+     *   operationId="getPersonne",
+     *   summary="Display a list of Personne.",
+     *   description="Diplaying a list of six personnes",
      *   produces={"application/json"},
      *   @SWG\Response(
      *     response=200,
      *     description="successful operation",
      *     @SWG\Schema(
      *      type="array",
-     *      @SWG\Items(ref="#/definitions/Distributeur")
+     *      @SWG\Items(ref="#/definitions/Personne")
      *     ),
      *   ),
      * )
@@ -34,60 +33,73 @@ class DistributeurController extends Controller
      */
     public function index()
     {
-        $distributeurs = Distributeur::all();
-        //->take(5)
-        return $distributeurs;
+        $personne= Personne::all()->take(10);
+        return $personne;
     }
 
-
     /**
-     * @SWG\Post(path="/distributeur",
-     *     tags={"distributeur"},
-     *     summary="add 1 distributeur.",
-     *     operationId="addDistributeur",
-     *     description="This is to insert a distributor",
+     * @SWG\Post(path="/personne",
+     *     tags={"personne"},
+     *     summary="add 1 personne.",
+     *     operationId="addPersonne",
+     *     description="This is to insert a personne",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the field name you want to update",
+     *         description="Personne's lastname you want to update",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="telephone",
+     *         name="prenom",
      *         in="formData",
-     *         description="the field telephone you want to update",
+     *         description="Personne's firstname you want to update",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="date_naissance",
+     *         in="formData",
+     *         description="Personne's birthday you want to update",
+     *         required=true,
+     *         format="date",
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="email",
+     *         in="formData",
+     *         description="Personne's email you want to update",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="adresse",
      *         in="formData",
-     *         description="the field adresse you want to update",
+     *         description="the fields you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="cpostal",
      *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="integer",
+     *         description="Personne's code postal you want to update",
+     *         required=true,
+     *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="ville",
      *         in="formData",
-     *         description="the field ville you want to update",
-     *         required=false,
+     *         description="Personne's ville you want to update",
+     *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="pays",
      *         in="formData",
-     *         description="the field pays you want to update",
-     *         required=false,
+     *         description="Personne's country you want to update",
+     *         required=true,
      *         type="string",
      *     ),
      *      @SWG\Response(
@@ -95,7 +107,7 @@ class DistributeurController extends Controller
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Distributeur")
+     *              @SWG\Items(ref="#/definitions/Personne")
      *          ),
      *      ),
      *   @SWG\Response(
@@ -103,19 +115,22 @@ class DistributeurController extends Controller
      *       description="Invalid input",
      *   ),
      * )
-     * @param  \Illuminate\Http\Request $request
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //Validation des parametres a sauvegarder
+        //We make all field required except the adress
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:nom',
-            'telephone' => 'required',
-            'adresse' => 'string',
-            'cpostal' => 'integer',
-            'ville' => 'string',
-            'pays' => 'string',
+            'nom' => 'required',
+            'prenom' => 'required',
+            'date_naissance' => 'required|date_format:Y-m-d',
+            'email' => 'required|email',
+            'cpostal' => 'required',
+            'ville' => 'required',
+            'pays' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -125,42 +140,43 @@ class DistributeurController extends Controller
             );
         }
 
-        $distributeur = Distributeur::create(Input::all());
-        $distributeur->save();
+        $personne = Personne::create(Input::all());
+        $personne->save();
         return response()->json(
-            ['Distributeur' => $distributeur],
+            ['Personne' => $personne],
             201
         );
     }
 
     /**
-     * @SWG\Get(path="/distributeur/{distributeurId}",
-     *      tags={"distributeur"},
+     * @SWG\Get(path="/personne/{personneId}",
+     *      tags={"personne"},
      *      summary="show 1 row",
-     *      operationId="getDistributeurById",
-     *      description="Show one row of distributor",
+     *      operationId="getPersonneById",
+     *      description="Show one Personne",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *          name="distributeurId",
-     *          description="ID of distributor that needs to be fetched",
+     *          name="personneId",
+     *          description="ID of personne that needs to be fetched",
      *          required=true,
      *          in="path",
-     *          type="integer"
+     *          type="integer",
+     *          format="int64"
      *      ),
      *      @SWG\Response(
      *          response=200,
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Distributeur")
+     *              @SWG\Items(ref="#/definitions/Personne")
      *          ),
      *      ),
      *      @SWG\Response(response=400, description="Invalid ID supplied"),
-     *      @SWG\Response(response=404, description="Distributeur not found"),
+     *      @SWG\Response(response=404, description="Personne not found"),
      * )
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -172,82 +188,96 @@ class DistributeurController extends Controller
                 400
             );
         }
-        $distributeur = Distributeur::find($id);
-        //Test si le film exist
-        if (empty($distributeur)) {
+        $personne = Personne::find($id);
+        //Test si la personne exist
+        if (empty($personne)) {
             return response()->json(
-                ['error' => 'this distributeur does not exist !'],
+                ['error' => 'this personne does not exist'],
                 404
             );
         }
-        return $distributeur;
+        return $personne;
     }
-
 
     /**
      * @SWG\Put(
-     *     path="/distributeur/{distributeurId}",
-     *     tags={"distributeur"},
-     *     operationId="updateDistributeur",
-     *     summary="Update an existing distributeur",
+     *     path="/personne/{personneId}",
+     *     tags={"personne"},
+     *     operationId="updatePersonne",
+     *     summary="Update an existing personne",
      *     description="",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="distributeurId",
+     *         name="personneId",
      *         in="path",
-     *         description="Update the information of a distributeur",
-     *         required=true,
+     *         description="Personne object that needs to be added to the store",
+     *         required=false,
      *         type="integer"
      *     ),
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the field nom you want to update",
+     *         description="Personne's lastname you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="telephone",
+     *         name="prenom",
      *         in="formData",
-     *         description="the field telephone you want to update",
+     *         description="Personne's firstname you want to update",
+     *         required=false,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="date_naissance",
+     *         in="formData",
+     *         description="Personne's birthday you want to update",
+     *         required=false,
+     *         format="date",
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="email",
+     *         in="formData",
+     *         description="Personne's email you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="adresse",
      *         in="formData",
-     *         description="the field adresse you want to update",
+     *         description="the fields you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="cpostal",
      *         in="formData",
-     *         description="the field cpostal you want to update",
+     *         description="Personne's code postal you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="ville",
      *         in="formData",
-     *         description="the field ville you want to update",
+     *         description="Personne's ville you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="pays",
      *         in="formData",
-     *         description="the field pays you want to update",
+     *         description="Personne's country you want to update",
      *         required=false,
-     *         type="string",
+     *         type="integer",
      *     ),
      *     @SWG\Response(
      *         response=201,
      *         description="Invalid ID supplied",
      *         @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Distributeur")
+     *              @SWG\Items(ref="#/definitions/Personne")
      *         ),
      *     ),
      *     @SWG\Response(
@@ -256,34 +286,17 @@ class DistributeurController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=404,
-     *         description="Distributeur not found",
+     *         description="Personne not found",
      *     ),
      * )
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //Validation des parametres a sauvegarder
-        $validator = Validator::make($request->all(), [
-            'nom' => 'string',
-            'telephone' => 'string',
-            'adresse' => 'string',
-            'cpostal' => 'integer',
-            'ville' => 'string',
-            'pays' => 'string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(
-                ['errors' => $validator->errors()->all()],
-                422
-            );
-        }
-
         if (!is_numeric($id)) {
             return response()->json(
                 ['error' => 'Invalid ID supplied'],
@@ -291,44 +304,42 @@ class DistributeurController extends Controller
             );
         }
 
-        $distributeurs = Distributeur::find($id);
-        if (empty($distributeurs)) {
+        $personne = Personne::find($id);
+        if (empty($personne)) {
             return response()->json(
-                ['error' => 'distributeur not found'],
+                ['error' => 'Personne not found'],
                 404
             );
         }
 
-        $distributeurs->fill(Input::all());
-        $distributeurs->save();
-
+        $personne->fill(Input::all());
+        $personne->save();
         return response()->json(
-            ['message' => "distributeur has been updated successfully"],
+            ['Fields have correctly update'],
             200
         );
-
     }
 
     /**
-     * @SWG\Delete(path="/distributeur/{distributeurId}",
-     *   tags={"distributeur"},
-     *   summary="Delete distributeur order by ID",
-     *   description="Delete a distributeur with his ID",
-     *   operationId="deleteDistributeur",
+     * @SWG\Delete(path="/personne/{personneId}",
+     *   tags={"personne"},
+     *   summary="Delete purchase order by ID",
+     *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
+     *   operationId="deletePersonne",
      *   produces={"application/json"},
      *   @SWG\Parameter(
-     *     name="distributeurId",
+     *     name="personneId",
      *     in="path",
-     *     description="ID of the distributeur that needs to be deleted",
+     *     description="ID of the order that needs to be deleted",
      *     required=true,
-     *     type="integer"
+     *     type="string"
      *   ),
      *   @SWG\Response(response=400, description="Invalid ID supplied"),
      *   @SWG\Response(response=404, description="Order not found")
      * )
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -339,18 +350,17 @@ class DistributeurController extends Controller
                 400
             );
         }
-        $distributeurs = Distributeur::find($id);
-        if (empty($distributeurs)) {
+        $personne = Personne::find($id);
+        if (empty($personne)) {
             return response()->json(
-                ['error' => 'there is no distributeur for this id'],
+                ['error' => 'there is no personne for this id'],
                 404
             );
         }
-        $distributeurs->delete();
+        $personne->delete();
         return response()->json(
-            ['message' => "distributeur resource deleted successfully"],
+            ['message' => "resource deleted successfully"],
             200
         );
     }
-
 }

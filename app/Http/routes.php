@@ -17,7 +17,9 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::resource('genre', 'GenreController');
     Route::resource('seance', 'SeanceController');
     Route::resource('salle', 'SalleController');
+    Route::resource('personne', 'PersonneController');
     Route::resource('distributeur', 'DistributeurController');
+    Route::resource('fonction', 'FonctionController');
 
     Route::get('film/getFilmWithGenre/{id}', [
         'as' => 'getFilmWithGenre',
@@ -29,7 +31,10 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         'uses' => 'GenreController@getFilmsForGenre'
     ]);
 
+
+    Route::resource('forfait', 'ForfaitController');
     Route::resource('reduction', 'ReductionController');
+    Route::resource('abonnement', 'AbonnementController');
 
 
 });

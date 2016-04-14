@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Distributeur;
+use App\Forfait;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
-class DistributeurController extends Controller
+class ForfaitController extends Controller
 {
-
     /**
-     * @SWG\Get(path="/distributeur",
-     *   tags={"distributeur"},
-     *   operationId="getDistributeur",
-     *   summary="Display a list of distributeurs.",
+     * @SWG\Get(path="/forfait",
+     *   tags={"forfait"},
+     *   operationId="getForfait",
+     *   summary="Display a list of forfaits.",
      *   description="This can only be done by the logged in user.",
      *   produces={"application/json"},
      *   @SWG\Response(
@@ -24,7 +22,7 @@ class DistributeurController extends Controller
      *     description="successful operation",
      *     @SWG\Schema(
      *      type="array",
-     *      @SWG\Items(ref="#/definitions/Distributeur")
+     *      @SWG\Items(ref="#/definitions/Forfait")
      *     ),
      *   ),
      * )
@@ -34,68 +32,52 @@ class DistributeurController extends Controller
      */
     public function index()
     {
-        $distributeurs = Distributeur::all();
-        //->take(5)
-        return $distributeurs;
+        $forfaits = Forfait::all()->take(5);
+        return $forfaits;
     }
 
-
     /**
-     * @SWG\Post(path="/distributeur",
-     *     tags={"distributeur"},
-     *     summary="add 1 distributeur.",
-     *     operationId="addDistributeur",
-     *     description="This is to insert a distributor",
+     * @SWG\Post(path="/forfait",
+     *     tags={"forfait"},
+     *     summary="add 1 forfait.",
+     *     operationId="addForfait",
+     *     description="This is to insert a forfait",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the field name you want to update",
+     *         description="the fields you want to update",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="telephone",
+     *         name="resum",
      *         in="formData",
-     *         description="the field telephone you want to update",
-     *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="adresse",
-     *         in="formData",
-     *         description="the field adresse you want to update",
+     *         description="the fields you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="cpostal",
+     *         name="prix",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="ville",
+     *         name="duree_jours",
      *         in="formData",
-     *         description="the field ville you want to update",
+     *         description="the fields you want to update",
      *         required=false,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="pays",
-     *         in="formData",
-     *         description="the field pays you want to update",
-     *         required=false,
-     *         type="string",
+     *         type="integer",
      *     ),
      *      @SWG\Response(
      *          response=201,
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Distributeur")
+     *              @SWG\Items(ref="#/definitions/Forfait")
      *          ),
      *      ),
      *   @SWG\Response(
@@ -106,16 +88,15 @@ class DistributeurController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:nom',
-            'telephone' => 'required',
-            'adresse' => 'string',
-            'cpostal' => 'integer',
-            'ville' => 'string',
-            'pays' => 'string',
+            'nom' => 'required|unique:forfaits',
+            'resum' => 'required|string',
+            'prix' => 'integer|min:0',
+            'duree_jours' => 'integer|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -124,25 +105,28 @@ class DistributeurController extends Controller
                 422
             );
         }
-
-        $distributeur = Distributeur::create(Input::all());
-        $distributeur->save();
+        $forfait = new Forfait();
+        $forfait->nom = $request->nom;
+        $forfait->resum = $request->resum;
+        $forfait->prix = $request->prix;
+        $forfait->duree_jours = $request->duree_jours;
+        $forfait->save();
         return response()->json(
-            ['Distributeur' => $distributeur],
+            ['Forfait' => $forfait],
             201
         );
     }
 
     /**
-     * @SWG\Get(path="/distributeur/{distributeurId}",
-     *      tags={"distributeur"},
-     *      summary="show 1 row",
-     *      operationId="getDistributeurById",
-     *      description="Show one row of distributor",
+     * @SWG\Get(path="/forfait/{forfaitId}",
+     *      tags={"forfait"},
+     *      summary="show 1 forfait",
+     *      operationId="getForfaitById",
+     *      description="Show one row",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *          name="distributeurId",
-     *          description="ID of distributor that needs to be fetched",
+     *          name="forfaitId",
+     *          description="ID of forfait that needs to be fetched",
      *          required=true,
      *          in="path",
      *          type="integer"
@@ -152,11 +136,11 @@ class DistributeurController extends Controller
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Distributeur")
+     *              @SWG\Items(ref="#/definitions/Forfait")
      *          ),
      *      ),
      *      @SWG\Response(response=400, description="Invalid ID supplied"),
-     *      @SWG\Response(response=404, description="Distributeur not found"),
+     *      @SWG\Response(response=404, description="Film not found"),
      * )
      * Display the specified resource.
      *
@@ -172,82 +156,60 @@ class DistributeurController extends Controller
                 400
             );
         }
-        $distributeur = Distributeur::find($id);
-        //Test si le film exist
-        if (empty($distributeur)) {
+        $forfaits = Forfait::find($id);
+        //Test si le forfait exist
+        if (empty($forfaits)) {
             return response()->json(
-                ['error' => 'this distributeur does not exist !'],
+                ['error' => 'this forfait does not exist'],
                 404
             );
         }
-        return $distributeur;
+        return $forfaits;
     }
-
 
     /**
      * @SWG\Put(
-     *     path="/distributeur/{distributeurId}",
-     *     tags={"distributeur"},
-     *     operationId="updateDistributeur",
-     *     summary="Update an existing distributeur",
+     *     path="/forfait/{forfaitId}",
+     *     tags={"forfait"},
+     *     operationId="updateForfait",
+     *     summary="Update an existing forfait",
      *     description="",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="distributeurId",
-     *         in="path",
-     *         description="Update the information of a distributeur",
-     *         required=true,
-     *         type="integer"
-     *     ),
-     *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the field nom you want to update",
+     *         description="the fields you want to update",
+     *         required=true,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="resum",
+     *         in="formData",
+     *         description="the fields you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="telephone",
+     *         name="prix",
      *         in="formData",
-     *         description="the field telephone you want to update",
+     *         description="the fields you want to update",
      *         required=false,
-     *         type="string",
+     *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="adresse",
+     *         name="duree_jours",
      *         in="formData",
-     *         description="the field adresse you want to update",
+     *         description="the fields you want to update",
      *         required=false,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="cpostal",
-     *         in="formData",
-     *         description="the field cpostal you want to update",
-     *         required=false,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="ville",
-     *         in="formData",
-     *         description="the field ville you want to update",
-     *         required=false,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="pays",
-     *         in="formData",
-     *         description="the field pays you want to update",
-     *         required=false,
-     *         type="string",
+     *         type="integer",
      *     ),
      *     @SWG\Response(
      *         response=201,
      *         description="Invalid ID supplied",
      *         @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Distributeur")
+     *              @SWG\Items(ref="#/definitions/Forfait")
      *         ),
      *     ),
      *     @SWG\Response(
@@ -256,8 +218,9 @@ class DistributeurController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=404,
-     *         description="Distributeur not found",
+     *         description="Forfait not found",
      *     ),
+     *     security={{"petstore_auth":{"write:forfaits", "read:forfaits"}}}
      * )
      * Update the specified resource in storage.
      *
@@ -269,12 +232,10 @@ class DistributeurController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'nom' => 'string',
-            'telephone' => 'string',
-            'adresse' => 'string',
-            'cpostal' => 'integer',
-            'ville' => 'string',
-            'pays' => 'string',
+            'nom' => 'unique:forfaits',
+            'resum' => 'string',
+            'prix' => 'integer|min:0',
+            'duree_jours' => 'integer|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -291,35 +252,36 @@ class DistributeurController extends Controller
             );
         }
 
-        $distributeurs = Distributeur::find($id);
-        if (empty($distributeurs)) {
+        $forfaits = Forfait::find($id);
+        if (empty($forfaits)) {
             return response()->json(
-                ['error' => 'distributeur not found'],
+                ['error' => 'Forfait not found'],
                 404
             );
         }
-
-        $distributeurs->fill(Input::all());
-        $distributeurs->save();
+        $forfaits->nom = $request->nom;
+        $forfaits->resum = $request->resum;
+        $forfaits->prix = $request->prix;
+        $forfaits->duree_jours = $request->duree_jours;
+        $forfaits->save();
 
         return response()->json(
-            ['message' => "distributeur has been updated successfully"],
-            200
+            ['Forfait' => $forfaits],
+            201
         );
-
     }
 
     /**
-     * @SWG\Delete(path="/distributeur/{distributeurId}",
-     *   tags={"distributeur"},
-     *   summary="Delete distributeur order by ID",
-     *   description="Delete a distributeur with his ID",
-     *   operationId="deleteDistributeur",
+     * @SWG\Delete(path="/forfait/{forfaitId}",
+     *   tags={"forfait"},
+     *   summary="Delete forfait by ID",
+     *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
+     *   operationId="deleteForfait",
      *   produces={"application/json"},
      *   @SWG\Parameter(
-     *     name="distributeurId",
+     *     name="forfaitId",
      *     in="path",
-     *     description="ID of the distributeur that needs to be deleted",
+     *     description="ID of the forfait that needs to be deleted",
      *     required=true,
      *     type="integer"
      *   ),
@@ -339,16 +301,16 @@ class DistributeurController extends Controller
                 400
             );
         }
-        $distributeurs = Distributeur::find($id);
-        if (empty($distributeurs)) {
+        $forfaits = Forfait::find($id);
+        if (empty($forfaits)) {
             return response()->json(
-                ['error' => 'there is no distributeur for this id'],
+                ['error' => 'there is no forfait for this id'],
                 404
             );
         }
-        $distributeurs->delete();
+        $forfaits->delete();
         return response()->json(
-            ['message' => "distributeur resource deleted successfully"],
+            ['message' => "resource deleted successfully"],
             200
         );
     }

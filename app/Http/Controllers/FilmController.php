@@ -123,8 +123,8 @@ class FilmController extends Controller
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
             'titre' => 'required|unique:films',
-            'id_genre' => 'exists:genre,id_genre',
-            'id_distribution' => 'exists:distribution,id_distribution',
+            'id_genre' => 'exists:genres,id_genre',
+            'id_distribution' => 'exists:distributions,id_distribution',
             'date_debut_affiche' => 'date_format:Y-m-d',
             'date_fin_affiche' => 'date_format:Y-m-d',
             'duree_minutes' => 'integer',
@@ -137,7 +137,7 @@ class FilmController extends Controller
                 422
             );
         }
-        $film = Film::create($request);
+        $film = Film::create(Input::all());
         $film->save();
         return response()->json(
             ['Film' => $film],
@@ -188,7 +188,7 @@ class FilmController extends Controller
         //Test si le film exist
         if (empty($film)) {
             return response()->json(
-                ['error' => 'this film does not exist bitch'],
+                ['error' => 'this film does not exist'],
                 404
             );
         }
@@ -201,7 +201,7 @@ class FilmController extends Controller
      *     tags={"film"},
      *     operationId="updateFilm",
      *     summary="Update an existing film",
-     *     description="",
+     *     description="Updating a Film form an ID provided",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
