@@ -43,7 +43,7 @@ class SeanceController extends Controller
      *     tags={"seance"},
      *     summary="Add a new seance.",
      *     operationId="addSeance",
-     *     description="This is to insert a film",
+     *     description="This is to insert a seance",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -117,11 +117,11 @@ class SeanceController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'id_film' => 'required|exists:film,id_film',
-            'id_salle' => 'required|exists:salle,id_salle',
-            'id_personne_ouvreur' => 'required|exists:personne,id_personne',
-            'id_personne_technicien' => 'required|exists:personne,id_personne',
-            'id_personne_menage' => 'required|exists:personne,id_personne',
+            'id_film' => 'required|exists:films,id_film',
+            'id_salle' => 'required|exists:salles,id_salle',
+            'id_personne_ouvreur' => 'required|exists:personnes,id_personne',
+            'id_personne_technicien' => 'required|exists:personnes,id_personne',
+            'id_personne_menage' => 'required|exists:personnes,id_personne',
             'debut_seance' => 'required|date_format:Y-m-d H:i:s|after:now|before:fin_seance',
             'fin_seance' => 'required|date_format:Y-m-d H:i:s|after:debut_seance',
         ]);
@@ -163,7 +163,7 @@ class SeanceController extends Controller
      *          ),
      *      ),
      *      @SWG\Response(response=400, description="Invalid ID supplied"),
-     *      @SWG\Response(response=404, description="Film not found"),
+     *      @SWG\Response(response=404, description="Seance not found"),
      * )
      * Display the specified resource.
      *
@@ -179,7 +179,7 @@ class SeanceController extends Controller
                 400
             );
         }
-        $seance = Seance::find($id);
+        $seance = Seance::with('ouvreur', 'technicien', 'menage')->find($id);
         //Test si le film exist
         if (empty($seance)) {
             return response()->json(
@@ -269,7 +269,7 @@ class SeanceController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=404,
-     *         description="Film not found",
+     *         description="Seance not found",
      *     ),
      * )
      * Update the specified resource in storage.
@@ -282,13 +282,13 @@ class SeanceController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'id_film' => 'exists:film,id_film',
-            'id_salle' => 'exists:salle,id_salle',
-            'id_personne_ouvreur' => 'exists:personne,id_personne',
-            'id_personne_technicien' => 'exists:personne,id_personne',
-            'id_personne_menage' => 'exists:personne,id_personne',
-            'debut_seance' => 'date',
-            'fin_seance' => 'date',
+            'id_film' => 'exists:films,id_film',
+            'id_salle' => 'exists:salles,id_salle',
+            'id_personne_ouvreur' => 'exists:personnes,id_personne',
+            'id_personne_technicien' => 'exists:personnes,id_personne',
+            'id_personne_menage' => 'exists:personnes,id_personne',
+            'debut_seance' => 'date_format:Y-m-d H:i:s|after:now|before:fin_seance',
+            'fin_seance' => 'date_format:Y-m-d H:i:s|after:debut_seance',
         ]);
 
         if ($validator->fails()) {
@@ -308,7 +308,7 @@ class SeanceController extends Controller
         $seance = Seance::find($id);
         if (empty($seance)) {
             return response()->json(
-                ['error' => 'Film not found'],
+                ['error' => 'Seance not found'],
                 404
             );
         }
@@ -356,7 +356,7 @@ class SeanceController extends Controller
         $seance = Seance::find($id);
         if (empty($seance)) {
             return response()->json(
-                ['error' => 'there is no film for this id'],
+                ['error' => 'there is no seance for this id'],
                 404
             );
         }

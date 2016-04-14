@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  *  @SWG\Property(format="int64", property="id_personne_menage", type="integer"),
  *  @SWG\Property(property="debut_seance", type="date", default="2011-01-12"),
  *  @SWG\Property(format="date", property="fin_seance", type="date", default="2011-01-12"),
+ *  @SWG\Property(property="ouvreur", ref="#/definitions/Personne")
+ *  @SWG\Property(property="technicien", ref="#/definitions/Personne")
+ *  @SWG\Property(property="menage", ref="#/definitions/Personne")
  *)
  */
 class Seance extends Model
@@ -29,11 +32,26 @@ class Seance extends Model
 
     public function film()
     {
-        return $this->belongsTo('App\Film');
+        return $this->belongsTo('App\Film', 'id_film');
     }
 
     public function salle()
     {
-        return $this->belongsTo('App\Salle');
+        return $this->belongsTo('App\Salle', 'id_salle');
+    }
+
+    public function ouvreur()
+    {
+        return $this->belongsTo('App\Personne', 'id_personne_ouvreur');
+    }
+
+    public function technicien()
+    {
+        return $this->belongsTo('App\Personne', 'id_personne_technicien');
+    }
+
+    public function menage()
+    {
+        return $this->belongsTo('App\Personne', 'id_personne_menage');
     }
 }
