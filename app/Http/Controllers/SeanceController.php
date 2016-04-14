@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Film;
+use App\Seance;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Input;
 
-class FilmController extends Controller
+class SeanceController extends Controller
 {
     /**
-     * @SWG\Get(path="/film",
-     *   tags={"film"},
-     *   operationId="getFilm",
-     *   summary="Display a list of films.",
+     * @SWG\Get(path="/seance",
+     *   tags={"seance"},
+     *   operationId="getSeance",
+     *   summary="Display a list of seances.",
      *   description="This can only be done by the logged in user.",
      *   produces={"application/json"},
      *   @SWG\Response(
@@ -23,7 +24,7 @@ class FilmController extends Controller
      *     description="successful operation",
      *     @SWG\Schema(
      *      type="array",
-     *      @SWG\Items(ref="#/definitions/Film")
+     *      @SWG\Items(ref="#/definitions/Seance")
      *     ),
      *   ),
      * )
@@ -33,80 +34,75 @@ class FilmController extends Controller
      */
     public function index()
     {
-        $films = Film::all()->take(5);
-        return $films;
+        $seances = Seance::all();
+        return $seances;
     }
 
     /**
-     * @SWG\Post(path="/film",
-     *     tags={"film"},
-     *     summary="add 1 film.",
-     *     operationId="addFilm",
+     * @SWG\Post(path="/seance",
+     *     tags={"seance"},
+     *     summary="Add a new seance.",
+     *     operationId="addSeance",
      *     description="This is to insert a film",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="titre",
+     *         name="id_film",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="id_genre",
+     *         name="id_salle",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="id_distributeur",
+     *         name="id_personne_ouvreur",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="resum",
+     *         name="id_personne_technicien",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
+     *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="id_personne_menage",
+     *         in="formData",
+     *         description="the fields you want to update",
+     *         required=true,
+     *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="debut_seance",
+     *         in="formData",
+     *         description="the fields you want to update",
+     *         required=true,
      *         type="string",
+     *         format="date-time",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_debut_affiche",
+     *         name="fin_seance",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="date_fin_affiche",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="duree_minutes",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="integer",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="annee_production",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="integer",
+     *         format="date-time",
      *     ),
      *      @SWG\Response(
      *          response=201,
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Film")
+     *              @SWG\Items(ref="#/definitions/Seance")
      *          ),
      *      ),
      *   @SWG\Response(
@@ -117,18 +113,17 @@ class FilmController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-
     public function store(Request $request)
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'titre' => 'required|unique:films',
-            'id_genre' => 'exists:genres,id_genre',
-            'id_distribution' => 'exists:distributions,id_distribution',
-            'date_debut_affiche' => 'date_format:Y-m-d',
-            'date_fin_affiche' => 'date_format:Y-m-d',
-            'duree_minutes' => 'integer',
-            'annee_production' => 'integer',
+            'id_film' => 'required|exists:film,id_film',
+            'id_salle' => 'required|exists:salle,id_salle',
+            'id_personne_ouvreur' => 'required|exists:personne,id_personne',
+            'id_personne_technicien' => 'required|exists:personne,id_personne',
+            'id_personne_menage' => 'required|exists:personne,id_personne',
+            'debut_seance' => 'required|date_format:Y-m-d H:i:s|after:now|before:fin_seance',
+            'fin_seance' => 'required|date_format:Y-m-d H:i:s|after:debut_seance',
         ]);
 
         if ($validator->fails()) {
@@ -137,24 +132,24 @@ class FilmController extends Controller
                 422
             );
         }
-        $film = Film::create(Input::all());
-        $film->save();
+        $seance = Seance::create(Input::all());
+        $seance->save();
         return response()->json(
-            ['Film' => $film],
-            201
+            ['Seance' => $seance],
+            Response::HTTP_CREATED
         );
     }
 
     /**
-     * @SWG\Get(path="/film/{filmId}",
-     *      tags={"film"},
-     *      summary="show 1 row",
-     *      operationId="getFilmById",
+     * @SWG\Get(path="/seance/{seanceId}",
+     *      tags={"seance"},
+     *      summary="Show 1 row",
+     *      operationId="getSeanceById",
      *      description="Show one row",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *          name="filmId",
-     *          description="ID of film that needs to be fetched",
+     *          name="seanceId",
+     *          description="ID of seance that needs to be fetched",
      *          required=true,
      *          in="path",
      *          type="integer"
@@ -164,7 +159,7 @@ class FilmController extends Controller
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Film")
+     *              @SWG\Items(ref="#/definitions/Seance")
      *          ),
      *      ),
      *      @SWG\Response(response=400, description="Invalid ID supplied"),
@@ -184,88 +179,81 @@ class FilmController extends Controller
                 400
             );
         }
-        $film = Film::find($id);
+        $seance = Seance::find($id);
         //Test si le film exist
-        if (empty($film)) {
+        if (empty($seance)) {
             return response()->json(
-                ['error' => 'this film does not exist'],
+                ['error' => 'this seance does not exist'],
                 404
             );
         }
-        return $film;
+        return $seance;
     }
 
     /**
      * @SWG\Put(
-     *     path="/film/{filmId}",
-     *     tags={"film"},
-     *     operationId="updateFilm",
-     *     summary="Update an existing film",
-     *     description="Updating a Film form an ID provided",
+     *     path="/seance/{seanceId}",
+     *     tags={"seance"},
+     *     operationId="update seance",
+     *     summary="Update an existing seance",
+     *     description="",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="filmId",
+     *         name="seanceId",
      *         in="path",
-     *         description="Film object that needs to be added to the store",
-     *         required=true,
+     *         description="Seance object",
+     *         required=false,
      *         type="integer"
      *     ),
      *     @SWG\Parameter(
-     *         name="titre",
+     *         name="id_film",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="id_genre",
+     *         name="id_salle",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="id_distributeur",
+     *         name="id_personne_ouvreur",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="resum",
+     *         name="id_personne_technicien",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_debut_affiche",
+     *         name="id_personne_menage",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_fin_affiche",
+     *         name="debut_seance",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="duree_minutes",
+     *         name="fin_seance",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
-     *         type="integer",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="annee_production",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="integer",
+     *         type="string",
      *     ),
      *     @SWG\Response(
      *         response=201,
@@ -294,53 +282,58 @@ class FilmController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'titre' => 'string',
-            'id_genre' => 'exists:genre,id_genre',
-            'id_distribution' => 'exists:distribution,id_distribution',
-            'date_debut_affiche' => 'date_format:Y-m-d',
-            'date_fin_affiche' => 'date_format:Y-m-d',
-            'duree_minutes' => 'integer',
-            'annee_production' => 'integer',
+            'id_film' => 'exists:film,id_film',
+            'id_salle' => 'exists:salle,id_salle',
+            'id_personne_ouvreur' => 'exists:personne,id_personne',
+            'id_personne_technicien' => 'exists:personne,id_personne',
+            'id_personne_menage' => 'exists:personne,id_personne',
+            'debut_seance' => 'date',
+            'fin_seance' => 'date',
         ]);
-        if (!is_numeric($id)) {
-            return response()->json(
-                ['error' => 'Invalid ID supplied'],
-                400
-            );
-        }
+
         if ($validator->fails()) {
             return response()->json(
                 ['errors' => $validator->errors()->all()],
                 422
             );
         }
-        $film = Film::find($id);
-        if (empty($film)) {
+
+        if (!is_numeric($id)) {
+            return response()->json(
+                ['error' => 'Invalid ID supplied'],
+                400
+            );
+        }
+
+        $seance = Seance::find($id);
+        if (empty($seance)) {
             return response()->json(
                 ['error' => 'Film not found'],
                 404
             );
         }
 
-        $film->fill(Input::all());
-        $film->save();
+        $seance->fill(Seance::all());
+        $seance->save();
+
         return response()->json(
             ['Fields have been correctly update'],
-            200
+            Response::HTTP_OK
         );
+
     }
 
+
     /**
-     * @SWG\Delete(path="/film/{filmId}",
-     *   tags={"film"},
-     *   summary="Delete purchase order by ID",
-     *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
-     *   operationId="deleteFilm",
+     * @SWG\Delete(path="/seance/{seanceId}",
+     *   tags={"seance"},
+     *   summary="Delete seance by id",
+     *   operationId="deleteSeance",
      *   produces={"application/json"},
      *   @SWG\Parameter(
-     *     name="filmId",
+     *     name="reductionId",
      *     in="path",
-     *     description="ID of the order that needs to be deleted",
+     *     description="ID of the reduction that needs to be deleted",
      *     required=true,
      *     type="string"
      *   ),
@@ -360,72 +353,17 @@ class FilmController extends Controller
                 400
             );
         }
-        $film = Film::find($id);
-        if (empty($film)) {
+        $seance = Seance::find($id);
+        if (empty($seance)) {
             return response()->json(
                 ['error' => 'there is no film for this id'],
                 404
             );
         }
-        $film->delete();
+        $seance->delete();
         return response()->json(
             ['message' => "resource deleted successfully"],
             200
         );
-    }
-
-    /**
-     * @SWG\Get(
-     *     path="/film/getFilmWithGenre/{id}",
-     *     summary="Finds film with genre",
-     *     tags={"film"},
-     *     description="return a film with genre",
-     *     operationId="getFilmWithGenre",
-     *     consumes={"application/json"},
-     *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         type="integer",
-     *     ),
-     *     @SWG\Response(
-     *         response=200,
-     *         description="successful operation",
-     *         @SWG\Schema(
-     *             type="array",
-     *             @SWG\Items(ref="#/definitions/Film")
-     *         ),
-     *     ),
-     *     @SWG\Response(
-     *         response="400",
-     *         description="Invalid Id supplied",
-     *     ),
-     *      @SWG\Response(
-     *         response="404",
-     *         description="genre not found",
-     *     ),
-     * )
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function getFilmWithGenre($id)
-    {
-        if (!is_numeric($id)) {
-            return response()->json(
-                ['error' => 'Invalid ID supplied'],
-                400
-            );
-        }
-
-        $films = Film::find($id);
-        if (empty($films)) {
-            return response()->json(
-                ['error' => 'genre not found'],
-                404
-            );
-        }
-
-        return $films->genre;
     }
 }

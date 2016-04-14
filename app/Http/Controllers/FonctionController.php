@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Reduction;
+use App\Fonction;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
-class ReductionController extends Controller
+class FonctionController extends Controller
 {
     /**
-     * @SWG\Get(path="/reduction",
-     *   tags={"reduction"},
-     *   operationId="getReduction",
-     *   summary="Display a list of reductions.",
+     * @SWG\Get(path="/fonction",
+     *   tags={"fonction"},
+     *   operationId="getFonction",
+     *   summary="Display a list of fonctions.",
      *   description="This can only be done by the logged in user.",
      *   produces={"application/json"},
      *   @SWG\Response(
@@ -22,7 +23,7 @@ class ReductionController extends Controller
      *     description="successful operation",
      *     @SWG\Schema(
      *      type="array",
-     *      @SWG\Items(ref="#/definitions/Reduction")
+     *      @SWG\Items(ref="#/definitions/Fonction")
      *     ),
      *   ),
      * )
@@ -32,52 +33,47 @@ class ReductionController extends Controller
      */
     public function index()
     {
-        $reductions = Reduction::all()->take(5);
-        return $reductions;
+        $fonctions = Fonction::all();
+        //->take(5)
+        return $fonctions;
     }
 
+
     /**
-     * @SWG\POST(path="/reduction",
-     *     tags={"reduction"},
-     *     summary="add 1 reduction",
-     *     operationId="addReduction",
-     *     description="This is to insert a reduction",
+     * @SWG\Post(path="/fonction",
+     *     tags={"fonction"},
+     *     summary="add 1 fonction.",
+     *     operationId="addFonction",
+     *     description="This is to insert a fonction",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="the field nom you want to update",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_debut",
+     *         name="salaire",
      *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
+     *         description="the field salaire you want to update",
+     *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_fin",
+     *         name="cadre",
      *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="pourcentage_reduction",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="integer",
+     *         description="the field cadre you want to update",
+     *         required=true,
+     *         type="boolean",
      *     ),
      *      @SWG\Response(
      *          response=201,
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
+     *              @SWG\Items(ref="#/definitions/Fonction")
      *          ),
      *      ),
      *   @SWG\Response(
@@ -92,10 +88,9 @@ class ReductionController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:reductions',
-            'date_debut' => 'required|date_format:Y-m-d|before:date_fin',
-            'date_fin' => 'required|date_format:Y-m-d|after:date_debut',
-            'pourcentage_reduction' => 'required|integer|between:0,100',
+            'nom' => 'required|unique:fonctions',
+            'salaire' => 'required',
+            'cadre' => 'required|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -104,28 +99,25 @@ class ReductionController extends Controller
                 422
             );
         }
-        $reductions = new Reduction();
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+
+        $fonction = Fonction::create(Input::all());
+        $fonction->save();
         return response()->json(
-            ['Reduction' => $reductions],
+            ['Fonction' => $fonction],
             201
         );
     }
 
     /**
-     * @SWG\Get(path="/reduction/{reductionId}",
-     *      tags={"reduction"},
-     *      summary="show 1 row",
-     *      operationId="getReductionById",
-     *      description="Show one row",
+     * @SWG\Get(path="/fonction/{fonctionId}",
+     *      tags={"fonction"},
+     *      summary="show 1 row of fonction",
+     *      operationId="getFonctionById",
+     *      description="Show one row of fonction",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *          name="reductionId",
-     *          description="ID of reduction that needs to be fetched",
+     *          name="fonctionId",
+     *          description="ID of fonction that needs to be fetched",
      *          required=true,
      *          in="path",
      *          type="integer"
@@ -135,11 +127,11 @@ class ReductionController extends Controller
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
+     *              @SWG\Items(ref="#/definitions/Fonction")
      *          ),
      *      ),
      *      @SWG\Response(response=400, description="Invalid ID supplied"),
-     *      @SWG\Response(response=404, description="Reduction not found"),
+     *      @SWG\Response(response=404, description="Fonction not found"),
      * )
      * Display the specified resource.
      *
@@ -155,60 +147,61 @@ class ReductionController extends Controller
                 400
             );
         }
-        $reductions = Reduction::find($id);
-        //Test si le reduction exist
-        if (empty($reductions)) {
+        $fonctions = Fonction::find($id);
+        //Test si le film exist
+        if (empty($fonctions)) {
             return response()->json(
-                ['error' => 'this reduction does not exist bitch'],
+                ['error' => 'this fonction does not exist !'],
                 404
             );
         }
-        return $reductions;
+        return $fonctions;
     }
+
 
     /**
      * @SWG\Put(
-     *     path="/reduction/{reductionId}",
-     *     tags={"reduction"},
-     *     operationId="updateReduction",
-     *     summary="Update an existing reduction",
+     *     path="/fonction/{fonctionId}",
+     *     tags={"fonction"},
+     *     operationId="updateFonction",
+     *     summary="Update an existing fonction",
      *     description="",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
+     *         name="fonctionId",
+     *         in="path",
+     *         description="Update the information of a fonction",
+     *         required=true,
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the fields you want to update",
-     *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="date_debut",
-     *         in="formData",
-     *         description="the fields you want to update",
+     *         description="the field nom you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_fin",
+     *         name="salaire",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="the field telephone you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="pourcentage_reduction",
+     *         name="cadre",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="the field cadre you want to update",
      *         required=false,
-     *         type="integer",
+     *         type="boolean",
      *     ),
      *     @SWG\Response(
      *         response=201,
      *         description="Invalid ID supplied",
      *         @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
+     *              @SWG\Items(ref="#/definitions/Fonction")
      *         ),
      *     ),
      *     @SWG\Response(
@@ -217,8 +210,9 @@ class ReductionController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=404,
-     *         description="Film not found",
+     *         description="Fonction not found",
      *     ),
+     *     security={{"petstore_auth":{"write:fonction", "read:fonction"}}}
      * )
      * Update the specified resource in storage.
      *
@@ -228,20 +222,6 @@ class ReductionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:reductions',
-            'date_debut' => 'required|date_format:Y-m-d|before:date_fin',
-            'date_fin' => 'required|date_format:Y-m-d|after:date_debut',
-            'pourcentage_reduction' => 'required|integer|between:0,100',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(
-                ['errors' => $validator->errors()->all()],
-                422
-            );
-        }
-
         if (!is_numeric($id)) {
             return response()->json(
                 ['error' => 'Invalid ID supplied'],
@@ -249,42 +229,40 @@ class ReductionController extends Controller
             );
         }
 
-        $reductions = Reduction::find($id);
-        if (empty($reductions)) {
+        $fonctions = Fonction::find($id);
+        if (empty($fonctions)) {
             return response()->json(
-                ['error' => 'Reduction not found'],
+                ['error' => 'fonction not found'],
                 404
             );
         }
 
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+        $fonctions->fill(Input::all());
+        $fonctions->save();
 
         return response()->json(
-            ['Reduction' => $reductions],
-            201
+            ['message' => "fonction has been updated successfully"],
+            200
         );
+
     }
 
     /**
-     * @SWG\Delete(path="/reduction/{reductionId}",
-     *   tags={"reduction"},
-     *   summary="Delete reduction by ID",
-     *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
-     *   operationId="deleteReduction",
+     * @SWG\Delete(path="/fonction/{fonctionId}",
+     *   tags={"fonction"},
+     *   summary="Delete fonction order by ID",
+     *   description="Delete a fonction with his ID",
+     *   operationId="deleteFonction",
      *   produces={"application/json"},
      *   @SWG\Parameter(
-     *     name="reductionId",
+     *     name="fonctionId",
      *     in="path",
-     *     description="ID of the reduction that needs to be deleted",
+     *     description="ID of the fonction that needs to be deleted",
      *     required=true,
-     *     type="string"
+     *     type="integer"
      *   ),
      *   @SWG\Response(response=400, description="Invalid ID supplied"),
-     *   @SWG\Response(response=404, description="Order not found")
+     *   @SWG\Response(response=404, description="fonction not found")
      * )
      * Remove the specified resource from storage.
      *
@@ -299,16 +277,16 @@ class ReductionController extends Controller
                 400
             );
         }
-        $reductions = Reduction::find($id);
-        if (empty($reductions)) {
+        $fonctions = Fonction::find($id);
+        if (empty($fonctions)) {
             return response()->json(
-                ['error' => 'there is no reduction for this id'],
+                ['error' => 'there is no fonction for this id'],
                 404
             );
         }
-        $reductions->delete();
+        $fonctions->delete();
         return response()->json(
-            ['message' => "resource deleted successfully"],
+            ['message' => "fonction resource deleted successfully"],
             200
         );
     }

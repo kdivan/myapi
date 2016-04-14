@@ -23,14 +23,27 @@ class Film extends Model
 {
     public $primaryKey = "id_film";
     public $timestamps = false;
-
+    /**
+     * @var array
+     */
     protected $fillable = ['titre', 'resum', 'id_genre', 'id_distributeur', 'date_debut_affiche', 'date_fin_affiche', 'duree_minutes', 'annee_production'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function genre()
     {
         return $this->belongsTo('App\Genre', 'id_genre');
     }
 
+    public function seances()
+    {
+        return $this->hasMany('App\Seance', 'id_film');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function distributeur()
     {
         return $this->belongsTo('App\Distributeur', 'id_distributeur');

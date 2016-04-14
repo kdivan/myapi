@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Reduction;
+use App\Abonnement;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
-class ReductionController extends Controller
+
+class AbonnementController extends Controller
 {
     /**
-     * @SWG\Get(path="/reduction",
-     *   tags={"reduction"},
-     *   operationId="getReduction",
-     *   summary="Display a list of reductions.",
+     * @SWG\Get(path="/abonnement",
+     *   tags={"abonnement"},
+     *   operationId="getAbonnement",
+     *   summary="Display a list of abonnements.",
      *   description="This can only be done by the logged in user.",
      *   produces={"application/json"},
      *   @SWG\Response(
@@ -22,7 +23,7 @@ class ReductionController extends Controller
      *     description="successful operation",
      *     @SWG\Schema(
      *      type="array",
-     *      @SWG\Items(ref="#/definitions/Reduction")
+     *      @SWG\Items(ref="#/definitions/Abonnement")
      *     ),
      *   ),
      * )
@@ -32,52 +33,39 @@ class ReductionController extends Controller
      */
     public function index()
     {
-        $reductions = Reduction::all()->take(5);
-        return $reductions;
+        $abonnements = Abonnement::all()->take(5);
+        return $abonnements;
     }
 
     /**
-     * @SWG\POST(path="/reduction",
-     *     tags={"reduction"},
-     *     summary="add 1 reduction",
-     *     operationId="addReduction",
-     *     description="This is to insert a reduction",
+     * @SWG\Post(path="/abonnement",
+     *     tags={"abonnement"},
+     *     summary="add 1 abonnement",
+     *     operationId="addAbonnement",
+     *     description="This is to insert an abonnement",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="nom",
+     *         name="id_forfait",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="date_debut",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="date_fin",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="pourcentage_reduction",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
      *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="debut",
+     *         in="formData",
+     *         description="the fields you want to update",
+     *         required=false,
+     *         type="string",
+     *         format="date",
      *     ),
      *      @SWG\Response(
      *          response=201,
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
+     *              @SWG\Items(ref="#/definitions/Abonnement")
      *          ),
      *      ),
      *   @SWG\Response(
@@ -92,10 +80,8 @@ class ReductionController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:reductions',
-            'date_debut' => 'required|date_format:Y-m-d|before:date_fin',
-            'date_fin' => 'required|date_format:Y-m-d|after:date_debut',
-            'pourcentage_reduction' => 'required|integer|between:0,100',
+            'id_forfait' => 'required|exists:forfaits,id_forfait',
+            'debut' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         if ($validator->fails()) {
@@ -104,28 +90,25 @@ class ReductionController extends Controller
                 422
             );
         }
-        $reductions = new Reduction();
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+        $abonnements = Abonnement::create($request);
+        $abonnements->save();
+
         return response()->json(
-            ['Reduction' => $reductions],
+            ['Abonnement' => $abonnements],
             201
         );
     }
 
     /**
-     * @SWG\Get(path="/reduction/{reductionId}",
-     *      tags={"reduction"},
+     * @SWG\Get(path="/abonnement/{abonnementId}",
+     *      tags={"abonnement"},
      *      summary="show 1 row",
-     *      operationId="getReductionById",
+     *      operationId="getAbonnementById",
      *      description="Show one row",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *          name="reductionId",
-     *          description="ID of reduction that needs to be fetched",
+     *          name="abonnementId",
+     *          description="ID of abonnement that needs to be fetched",
      *          required=true,
      *          in="path",
      *          type="integer"
@@ -135,11 +118,11 @@ class ReductionController extends Controller
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
+     *              @SWG\Items(ref="#/definitions/Abonnement")
      *          ),
      *      ),
      *      @SWG\Response(response=400, description="Invalid ID supplied"),
-     *      @SWG\Response(response=404, description="Reduction not found"),
+     *      @SWG\Response(response=404, description="Abonnement not found"),
      * )
      * Display the specified resource.
      *
@@ -155,60 +138,47 @@ class ReductionController extends Controller
                 400
             );
         }
-        $reductions = Reduction::find($id);
-        //Test si le reduction exist
-        if (empty($reductions)) {
+        $abonnements = Abonnement::find($id);
+        //Test si le abonnement exist
+        if (empty($abonnements)) {
             return response()->json(
-                ['error' => 'this reduction does not exist bitch'],
+                ['error' => 'this abonnement does not exist'],
                 404
             );
         }
-        return $reductions;
+        return $abonnements;
     }
 
     /**
      * @SWG\Put(
-     *     path="/reduction/{reductionId}",
-     *     tags={"reduction"},
-     *     operationId="updateReduction",
-     *     summary="Update an existing reduction",
-     *     description="",
+     *     path="/abonnement/{abonnementId}",
+     *     tags={"abonnement"},
+     *     operationId="updateAbonnement",
+     *     summary="Update an existing abonnement",
+     *     description="Updating an exiting abonnement with an ID provided",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="nom",
+     *         name="id_forfait",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=true,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="date_debut",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="date_fin",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="pourcentage_reduction",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
      *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="debut",
+     *         in="formData",
+     *         description="the fields you want to update",
+     *         required=false,
+     *         type="string",
+     *         format="date",
      *     ),
      *     @SWG\Response(
      *         response=201,
      *         description="Invalid ID supplied",
      *         @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
+     *              @SWG\Items(ref="#/definitions/Abonnement")
      *         ),
      *     ),
      *     @SWG\Response(
@@ -217,7 +187,7 @@ class ReductionController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=404,
-     *         description="Film not found",
+     *         description="Abonnement not found",
      *     ),
      * )
      * Update the specified resource in storage.
@@ -229,10 +199,8 @@ class ReductionController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:reductions',
-            'date_debut' => 'required|date_format:Y-m-d|before:date_fin',
-            'date_fin' => 'required|date_format:Y-m-d|after:date_debut',
-            'pourcentage_reduction' => 'required|integer|between:0,100',
+            'id_forfait' => 'required|exists:forfaits,id_forfait',
+            'debut' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         if ($validator->fails()) {
@@ -249,37 +217,33 @@ class ReductionController extends Controller
             );
         }
 
-        $reductions = Reduction::find($id);
-        if (empty($reductions)) {
+        $abonnements = Abonnement::find($id);
+        if (empty($abonnements)) {
             return response()->json(
-                ['error' => 'Reduction not found'],
+                ['error' => 'Abonnement not found'],
                 404
             );
         }
-
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+        $abonnements->fill(Input::all());
+        $abonnements->save();
 
         return response()->json(
-            ['Reduction' => $reductions],
+            ['Abonnement' => $abonnements],
             201
         );
     }
 
     /**
-     * @SWG\Delete(path="/reduction/{reductionId}",
-     *   tags={"reduction"},
-     *   summary="Delete reduction by ID",
+     * @SWG\Delete(path="/abonnement/{abonnementId}",
+     *   tags={"abonnement"},
+     *   summary="Delete abonnement by ID",
      *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
-     *   operationId="deleteReduction",
+     *   operationId="deleteAbonnement",
      *   produces={"application/json"},
      *   @SWG\Parameter(
-     *     name="reductionId",
+     *     name="abonnementId",
      *     in="path",
-     *     description="ID of the reduction that needs to be deleted",
+     *     description="ID of the abonnement that needs to be deleted",
      *     required=true,
      *     type="string"
      *   ),
@@ -299,14 +263,14 @@ class ReductionController extends Controller
                 400
             );
         }
-        $reductions = Reduction::find($id);
-        if (empty($reductions)) {
+        $abonnements = Abonnement::find($id);
+        if (empty($abonnements)) {
             return response()->json(
-                ['error' => 'there is no reduction for this id'],
+                ['error' => 'there is no abonnement for this id'],
                 404
             );
         }
-        $reductions->delete();
+        $abonnements->delete();
         return response()->json(
             ['message' => "resource deleted successfully"],
             200

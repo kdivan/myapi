@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Reduction;
+use App\Salle;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
-class ReductionController extends Controller
+class SalleController extends Controller
 {
     /**
-     * @SWG\Get(path="/reduction",
-     *   tags={"reduction"},
-     *   operationId="getReduction",
-     *   summary="Display a list of reductions.",
+     * @SWG\Get(path="/salle",
+     *   tags={"salle"},
+     *   operationId="getSalle",
+     *   summary="Display a list of salles.",
      *   description="This can only be done by the logged in user.",
      *   produces={"application/json"},
      *   @SWG\Response(
@@ -22,7 +24,7 @@ class ReductionController extends Controller
      *     description="successful operation",
      *     @SWG\Schema(
      *      type="array",
-     *      @SWG\Items(ref="#/definitions/Reduction")
+     *      @SWG\Items(ref="#/definitions/Salle")
      *     ),
      *   ),
      * )
@@ -32,54 +34,47 @@ class ReductionController extends Controller
      */
     public function index()
     {
-        $reductions = Reduction::all()->take(5);
-        return $reductions;
+        $salles = Salle::all();
+        return $salles;
     }
 
+
     /**
-     * @SWG\POST(path="/reduction",
-     *     tags={"reduction"},
-     *     summary="add 1 reduction",
-     *     operationId="addReduction",
-     *     description="This is to insert a reduction",
+     * @SWG\Post(path="/salle",
+     *     tags={"salle"},
+     *     summary="Add a new salle.",
+     *     operationId="addSalle",
+     *     description="This is to insert a salle",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="nom",
+     *         name="numero_salle",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=true,
-     *         type="string",
+     *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_debut",
+     *         name="nom_salle",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_fin",
-     *         in="formData",
-     *         description="the fields you want to update",
-     *         required=false,
-     *         type="string",
-     *     ),
-     *     @SWG\Parameter(
-     *         name="pourcentage_reduction",
+     *         name="etage_salle",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="integer",
      *     ),
-     *      @SWG\Response(
-     *          response=201,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
-     *          ),
-     *      ),
+     *     @SWG\Parameter(
+     *         name="places",
+     *         in="formData",
+     *         description="the fields you want to update",
+     *         required=false,
+     *         type="integer",
+     *     ),
      *   @SWG\Response(
      *       response=405,
      *       description="Invalid input",
@@ -92,10 +87,10 @@ class ReductionController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:reductions',
-            'date_debut' => 'required|date_format:Y-m-d|before:date_fin',
-            'date_fin' => 'required|date_format:Y-m-d|after:date_debut',
-            'pourcentage_reduction' => 'required|integer|between:0,100',
+            'numero_salle' => 'required|integer|unique:salles',
+            'nom_salle' => 'required|string',
+            'etage_salle' => 'required|integer',
+            'places' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -104,28 +99,26 @@ class ReductionController extends Controller
                 422
             );
         }
-        $reductions = new Reduction();
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+
+        $salle = Salle::create(Input::all());
+        $salle->save();
+
         return response()->json(
-            ['Reduction' => $reductions],
-            201
+            ['Salle' => $salle],
+            Response::HTTP_CREATED
         );
     }
 
     /**
-     * @SWG\Get(path="/reduction/{reductionId}",
-     *      tags={"reduction"},
-     *      summary="show 1 row",
-     *      operationId="getReductionById",
+     * @SWG\Get(path="/salle/{salleId}",
+     *      tags={"salle"},
+     *      summary="Show 1 row",
+     *      operationId="getSalleById",
      *      description="Show one row",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *          name="reductionId",
-     *          description="ID of reduction that needs to be fetched",
+     *          name="salleId",
+     *          description="ID of salle that needs to be fetched",
      *          required=true,
      *          in="path",
      *          type="integer"
@@ -135,11 +128,11 @@ class ReductionController extends Controller
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
+     *              @SWG\Items(ref="#/definitions/Salle")
      *          ),
      *      ),
      *      @SWG\Response(response=400, description="Invalid ID supplied"),
-     *      @SWG\Response(response=404, description="Reduction not found"),
+     *      @SWG\Response(response=404, description="Salle not found"),
      * )
      * Display the specified resource.
      *
@@ -155,49 +148,50 @@ class ReductionController extends Controller
                 400
             );
         }
-        $reductions = Reduction::find($id);
-        //Test si le reduction exist
-        if (empty($reductions)) {
+        $salle = Salle::find($id);
+        //Test si le film exist
+        if (empty($salle)) {
             return response()->json(
-                ['error' => 'this reduction does not exist bitch'],
+                ['error' => 'this seance does not exist'],
                 404
             );
         }
-        return $reductions;
+        return $salle;
     }
+
 
     /**
      * @SWG\Put(
-     *     path="/reduction/{reductionId}",
-     *     tags={"reduction"},
-     *     operationId="updateReduction",
-     *     summary="Update an existing reduction",
+     *     path="/salle/{salleId}",
+     *     tags={"salle"},
+     *     operationId="update seance",
+     *     summary="Update an existing seance",
      *     description="",
      *     consumes={"application/json"},
      *     produces={"application/json"},
-     *     @SWG\Parameter(
-     *         name="nom",
+     *      @SWG\Parameter(
+     *         name="numero_salle",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=true,
-     *         type="string",
+     *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_debut",
+     *         name="nom_salle",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_fin",
+     *         name="etage_salle",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
-     *         type="string",
+     *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="pourcentage_reduction",
+     *         name="places",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
@@ -208,7 +202,7 @@ class ReductionController extends Controller
      *         description="Invalid ID supplied",
      *         @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
+     *              @SWG\Items(ref="#/definitions/Salle")
      *         ),
      *     ),
      *     @SWG\Response(
@@ -217,7 +211,7 @@ class ReductionController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=404,
-     *         description="Film not found",
+     *         description="Salle not found",
      *     ),
      * )
      * Update the specified resource in storage.
@@ -228,11 +222,12 @@ class ReductionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:reductions',
-            'date_debut' => 'required|date_format:Y-m-d|before:date_fin',
-            'date_fin' => 'required|date_format:Y-m-d|after:date_debut',
-            'pourcentage_reduction' => 'required|integer|between:0,100',
+            'numero_salle' => 'integer|unique',
+            'nom_salle' => 'string',
+            'etage_salle' => 'integer',
+            'places' => 'integer',
         ]);
 
         if ($validator->fails()) {
@@ -249,35 +244,32 @@ class ReductionController extends Controller
             );
         }
 
-        $reductions = Reduction::find($id);
-        if (empty($reductions)) {
+        $salle = Salle::find($id);
+        if (empty($salle)) {
             return response()->json(
-                ['error' => 'Reduction not found'],
+                ['error' => 'Salle not found'],
                 404
             );
         }
 
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+        $salle->fill(Salle::all());
+        $salle->save();
 
         return response()->json(
-            ['Reduction' => $reductions],
-            201
+            ['Fields have been correctly update'],
+            Response::HTTP_OK
         );
+
     }
 
     /**
-     * @SWG\Delete(path="/reduction/{reductionId}",
-     *   tags={"reduction"},
-     *   summary="Delete reduction by ID",
-     *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
-     *   operationId="deleteReduction",
+     * @SWG\Delete(path="/salle/{salleId}",
+     *   tags={"salle"},
+     *   summary="Delete salle by id",
+     *   operationId="deleteSeance",
      *   produces={"application/json"},
      *   @SWG\Parameter(
-     *     name="reductionId",
+     *     name="salleId",
      *     in="path",
      *     description="ID of the reduction that needs to be deleted",
      *     required=true,
@@ -299,14 +291,14 @@ class ReductionController extends Controller
                 400
             );
         }
-        $reductions = Reduction::find($id);
-        if (empty($reductions)) {
+        $salle = Salle::find($id);
+        if (empty($salle)) {
             return response()->json(
-                ['error' => 'there is no reduction for this id'],
+                ['error' => 'there is no film for this id'],
                 404
             );
         }
-        $reductions->delete();
+        $salle->delete();
         return response()->json(
             ['message' => "resource deleted successfully"],
             200

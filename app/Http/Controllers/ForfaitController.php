@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Reduction;
+use App\Forfait;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use Illuminate\Support\Facades\Validator;
 
-class ReductionController extends Controller
+class ForfaitController extends Controller
 {
     /**
-     * @SWG\Get(path="/reduction",
-     *   tags={"reduction"},
-     *   operationId="getReduction",
-     *   summary="Display a list of reductions.",
+     * @SWG\Get(path="/forfait",
+     *   tags={"forfait"},
+     *   operationId="getForfait",
+     *   summary="Display a list of forfaits.",
      *   description="This can only be done by the logged in user.",
      *   produces={"application/json"},
      *   @SWG\Response(
@@ -22,7 +22,7 @@ class ReductionController extends Controller
      *     description="successful operation",
      *     @SWG\Schema(
      *      type="array",
-     *      @SWG\Items(ref="#/definitions/Reduction")
+     *      @SWG\Items(ref="#/definitions/Forfait")
      *     ),
      *   ),
      * )
@@ -32,16 +32,16 @@ class ReductionController extends Controller
      */
     public function index()
     {
-        $reductions = Reduction::all()->take(5);
-        return $reductions;
+        $forfaits = Forfait::all()->take(5);
+        return $forfaits;
     }
 
     /**
-     * @SWG\POST(path="/reduction",
-     *     tags={"reduction"},
-     *     summary="add 1 reduction",
-     *     operationId="addReduction",
-     *     description="This is to insert a reduction",
+     * @SWG\Post(path="/forfait",
+     *     tags={"forfait"},
+     *     summary="add 1 forfait.",
+     *     operationId="addForfait",
+     *     description="This is to insert a forfait",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -52,21 +52,21 @@ class ReductionController extends Controller
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_debut",
+     *         name="resum",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_fin",
+     *         name="prix",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
-     *         type="string",
+     *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="pourcentage_reduction",
+     *         name="duree_jours",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
@@ -77,7 +77,7 @@ class ReductionController extends Controller
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
+     *              @SWG\Items(ref="#/definitions/Forfait")
      *          ),
      *      ),
      *   @SWG\Response(
@@ -88,14 +88,15 @@ class ReductionController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:reductions',
-            'date_debut' => 'required|date_format:Y-m-d|before:date_fin',
-            'date_fin' => 'required|date_format:Y-m-d|after:date_debut',
-            'pourcentage_reduction' => 'required|integer|between:0,100',
+            'nom' => 'required|unique:forfaits',
+            'resum' => 'required|string',
+            'prix' => 'integer|min:0',
+            'duree_jours' => 'integer|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -104,28 +105,28 @@ class ReductionController extends Controller
                 422
             );
         }
-        $reductions = new Reduction();
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+        $forfait = new Forfait();
+        $forfait->nom = $request->nom;
+        $forfait->resum = $request->resum;
+        $forfait->prix = $request->prix;
+        $forfait->duree_jours = $request->duree_jours;
+        $forfait->save();
         return response()->json(
-            ['Reduction' => $reductions],
+            ['Forfait' => $forfait],
             201
         );
     }
 
     /**
-     * @SWG\Get(path="/reduction/{reductionId}",
-     *      tags={"reduction"},
-     *      summary="show 1 row",
-     *      operationId="getReductionById",
+     * @SWG\Get(path="/forfait/{forfaitId}",
+     *      tags={"forfait"},
+     *      summary="show 1 forfait",
+     *      operationId="getForfaitById",
      *      description="Show one row",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *          name="reductionId",
-     *          description="ID of reduction that needs to be fetched",
+     *          name="forfaitId",
+     *          description="ID of forfait that needs to be fetched",
      *          required=true,
      *          in="path",
      *          type="integer"
@@ -135,11 +136,11 @@ class ReductionController extends Controller
      *          description="successful operation",
      *          @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
+     *              @SWG\Items(ref="#/definitions/Forfait")
      *          ),
      *      ),
      *      @SWG\Response(response=400, description="Invalid ID supplied"),
-     *      @SWG\Response(response=404, description="Reduction not found"),
+     *      @SWG\Response(response=404, description="Film not found"),
      * )
      * Display the specified resource.
      *
@@ -155,23 +156,23 @@ class ReductionController extends Controller
                 400
             );
         }
-        $reductions = Reduction::find($id);
-        //Test si le reduction exist
-        if (empty($reductions)) {
+        $forfaits = Forfait::find($id);
+        //Test si le forfait exist
+        if (empty($forfaits)) {
             return response()->json(
-                ['error' => 'this reduction does not exist bitch'],
+                ['error' => 'this forfait does not exist'],
                 404
             );
         }
-        return $reductions;
+        return $forfaits;
     }
 
     /**
      * @SWG\Put(
-     *     path="/reduction/{reductionId}",
-     *     tags={"reduction"},
-     *     operationId="updateReduction",
-     *     summary="Update an existing reduction",
+     *     path="/forfait/{forfaitId}",
+     *     tags={"forfait"},
+     *     operationId="updateForfait",
+     *     summary="Update an existing forfait",
      *     description="",
      *     consumes={"application/json"},
      *     produces={"application/json"},
@@ -183,21 +184,21 @@ class ReductionController extends Controller
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_debut",
+     *         name="resum",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
-     *         name="date_fin",
+     *         name="prix",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
-     *         type="string",
+     *         type="integer",
      *     ),
      *     @SWG\Parameter(
-     *         name="pourcentage_reduction",
+     *         name="duree_jours",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
@@ -208,7 +209,7 @@ class ReductionController extends Controller
      *         description="Invalid ID supplied",
      *         @SWG\Schema(
      *              type="array",
-     *              @SWG\Items(ref="#/definitions/Reduction")
+     *              @SWG\Items(ref="#/definitions/Forfait")
      *         ),
      *     ),
      *     @SWG\Response(
@@ -217,8 +218,9 @@ class ReductionController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=404,
-     *         description="Film not found",
+     *         description="Forfait not found",
      *     ),
+     *     security={{"petstore_auth":{"write:forfaits", "read:forfaits"}}}
      * )
      * Update the specified resource in storage.
      *
@@ -228,11 +230,12 @@ class ReductionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:reductions',
-            'date_debut' => 'required|date_format:Y-m-d|before:date_fin',
-            'date_fin' => 'required|date_format:Y-m-d|after:date_debut',
-            'pourcentage_reduction' => 'required|integer|between:0,100',
+            'nom' => 'unique:forfaits',
+            'resum' => 'string',
+            'prix' => 'integer|min:0',
+            'duree_jours' => 'integer|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -249,39 +252,38 @@ class ReductionController extends Controller
             );
         }
 
-        $reductions = Reduction::find($id);
-        if (empty($reductions)) {
+        $forfaits = Forfait::find($id);
+        if (empty($forfaits)) {
             return response()->json(
-                ['error' => 'Reduction not found'],
+                ['error' => 'Forfait not found'],
                 404
             );
         }
-
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+        $forfaits->nom = $request->nom;
+        $forfaits->resum = $request->resum;
+        $forfaits->prix = $request->prix;
+        $forfaits->duree_jours = $request->duree_jours;
+        $forfaits->save();
 
         return response()->json(
-            ['Reduction' => $reductions],
+            ['Forfait' => $forfaits],
             201
         );
     }
 
     /**
-     * @SWG\Delete(path="/reduction/{reductionId}",
-     *   tags={"reduction"},
-     *   summary="Delete reduction by ID",
+     * @SWG\Delete(path="/forfait/{forfaitId}",
+     *   tags={"forfait"},
+     *   summary="Delete forfait by ID",
      *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
-     *   operationId="deleteReduction",
+     *   operationId="deleteForfait",
      *   produces={"application/json"},
      *   @SWG\Parameter(
-     *     name="reductionId",
+     *     name="forfaitId",
      *     in="path",
-     *     description="ID of the reduction that needs to be deleted",
+     *     description="ID of the forfait that needs to be deleted",
      *     required=true,
-     *     type="string"
+     *     type="integer"
      *   ),
      *   @SWG\Response(response=400, description="Invalid ID supplied"),
      *   @SWG\Response(response=404, description="Order not found")
@@ -299,17 +301,18 @@ class ReductionController extends Controller
                 400
             );
         }
-        $reductions = Reduction::find($id);
-        if (empty($reductions)) {
+        $forfaits = Forfait::find($id);
+        if (empty($forfaits)) {
             return response()->json(
-                ['error' => 'there is no reduction for this id'],
+                ['error' => 'there is no forfait for this id'],
                 404
             );
         }
-        $reductions->delete();
+        $forfaits->delete();
         return response()->json(
             ['message' => "resource deleted successfully"],
             200
         );
     }
+
 }
