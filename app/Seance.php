@@ -11,6 +11,9 @@ class Seance extends Model
     // pas besoin donc on disable
     public $timestamps = false;
 
+    protected $fillable = ['id_film', 'id_salle', 'id_personne_ouvreur', 'id_personne_technicien',
+                            'id_personne_menage', 'debut_seance', 'fin_seance'];
+
     public function film()
     {
         return $this->belongsTo('App\Film');

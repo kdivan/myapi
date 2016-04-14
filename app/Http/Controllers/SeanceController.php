@@ -6,6 +6,7 @@ use App\Seance;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 
 class SeanceController extends Controller
@@ -130,18 +131,11 @@ class SeanceController extends Controller
                 422
             );
         }
-        $seance = new Seance();
-        $seance->id_film = $request->id_film;
-        $seance->id_salle = $request->id_salle;
-        $seance->id_personne_ouvreur = $request->id_personne_ouvreur;
-        $seance->id_personne_technicien = $request->id_personne_technicien;
-        $seance->id_personne_menage = $request->id_personne_menage;
-        $seance->debut_seance = $request->debut_seance;
-        $seance->fin_seance = $request->fin_seance;
+        $seance = Seance::create($request);
         $seance->save();
         return response()->json(
             ['Seance' => $seance],
-            201
+            Response::HTTP_CREATED
         );
     }
 
