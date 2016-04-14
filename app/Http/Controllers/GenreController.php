@@ -41,15 +41,15 @@ class GenreController extends Controller
     /**
      * @SWG\Post(path="/genre",
      *     tags={"genre"},
-     *     summary="add a single genre.",
+     *     summary="add a new genre.",
      *     operationId="addGenre",
-     *     description="This is to insert a genre",
+     *     description="This is to insert a new genre in the database",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the name of the field you want to update",
+     *         description="Enter the name of the new genre",
      *         required=true,
      *         type="integer",
      *     ),
@@ -97,9 +97,9 @@ class GenreController extends Controller
     /**
      * @SWG\Get(path="/genre/{genreId}",
      *      tags={"genre"},
-     *      summary="show 1 row",
+     *      summary="show a genre",
      *      operationId="getGenreById",
-     *      description="Show one row",
+     *      description="To show a genre with ID provided",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="genreId",
@@ -151,7 +151,7 @@ class GenreController extends Controller
      *     tags={"genre"},
      *     operationId="updateGenre",
      *     summary="Update an existing genre",
-     *     description="",
+     *     description="To update a genre with ID provided",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -163,7 +163,7 @@ class GenreController extends Controller
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="New name of the genre",
      *         required=false,
      *         type="integer",
      *     ),
@@ -231,7 +231,7 @@ class GenreController extends Controller
     /**
      * @SWG\Delete(path="/genre/{genreId}",
      *   tags={"genre"},
-     *   summary="Delete genre by ID",
+     *   summary="Delete a genre",
      *   operationId="deleteGenre",
      *   produces={"application/json"},
      *   @SWG\Parameter(
