@@ -37,7 +37,7 @@ class ForfaitController extends Controller
     }
 
     /**
-     * @SWG\POST(path="/forfait",
+     * @SWG\Post(path="/forfait",
      *     tags={"forfait"},
      *     summary="add 1 forfait.",
      *     operationId="addForfait",
