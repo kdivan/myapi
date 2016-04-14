@@ -57,7 +57,8 @@ class AbonnementController extends Controller
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
-     *         type="date",
+     *         type="string",
+     *         format="date",
      *     ),
      *      @SWG\Response(
      *          response=201,
@@ -154,7 +155,7 @@ class AbonnementController extends Controller
      *     tags={"abonnement"},
      *     operationId="updateAbonnement",
      *     summary="Update an existing abonnement",
-     *     description="",
+     *     description="Updating an exiting abonnement with an ID provided",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
@@ -169,7 +170,8 @@ class AbonnementController extends Controller
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
-     *         type="date",
+     *         type="string",
+     *         format="date",
      *     ),
      *     @SWG\Response(
      *         response=201,
@@ -187,7 +189,6 @@ class AbonnementController extends Controller
      *         response=404,
      *         description="Abonnement not found",
      *     ),
-     *     security={{"petstore_auth":{"write:abonnements", "read:abonnements"}}}
      * )
      * Update the specified resource in storage.
      *
