@@ -6,6 +6,8 @@ use App\Genre;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 
 class GenreController extends Controller
 {
@@ -82,11 +84,12 @@ class GenreController extends Controller
                 422
             );
         }
-        $genre = new Genre();
-        $genre->nom = $request->nom;
+
+        $genre = Genre::create(Input::all());
         $genre->save();
+
         return response()->json(
-            ['id_genre' => $genre->id_genre],
+            ['genre' => $genre],
             201
         );
     }
@@ -132,10 +135,10 @@ class GenreController extends Controller
             );
         }
         $genre = Genre::find($id);
-        //Test si le film exist
+        //Test si le genre exist
         if (empty($genre)) {
             return response()->json(
-                ['error' => 'this film does not exist bitch'],
+                ['error' => 'this genre does not exist'],
                 404
             );
         }
@@ -189,7 +192,40 @@ class GenreController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //Validation des parametres a sauvegarder
+        $validator = Validator::make($request->all(), [
+            'nom' => 'unique:genres',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->errors()->all()],
+                422
+            );
+        }
+
+        if (!is_numeric($id)) {
+            return response()->json(
+                ['error' => 'Invalid ID supplied'],
+                400
+            );
+        }
+
+        $genre = Genre::find($id);
+        if (empty($genre)) {
+            return response()->json(
+                ['error' => 'Genre not found'],
+                404
+            );
+        }
+
+        $genre->fill(Input::all());
+        $genre->save();
+
+        return response()->json(
+            ['Genre' => $genre],
+            201
+        );
     }
 
     /**
@@ -216,7 +252,24 @@ class GenreController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if (!is_numeric($id)) {
+            return response()->json(
+                ['error' => 'Invalid ID supplied'],
+                400
+            );
+        }
+        $genre = Genre::find($id);
+        if (empty($genre)) {
+            return response()->json(
+                ['error' => 'there is no genre for this id'],
+                404
+            );
+        }
+        $genre->delete();
+        return response()->json(
+            ['message' => "resource deleted successfully"],
+            200
+        );
     }
 
     /**

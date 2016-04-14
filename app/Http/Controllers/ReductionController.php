@@ -6,6 +6,7 @@ use App\Reduction;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
 class ReductionController extends Controller
@@ -104,14 +105,11 @@ class ReductionController extends Controller
                 422
             );
         }
-        $reductions = new Reduction();
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+        $reduction = Reduction::create(Input::all());
+        $reduction->save();
+
         return response()->json(
-            ['Reduction' => $reductions],
+            ['Reduction' => $reduction],
             201
         );
     }
@@ -155,15 +153,15 @@ class ReductionController extends Controller
                 400
             );
         }
-        $reductions = Reduction::find($id);
+        $reduction = Reduction::find($id);
         //Test si le reduction exist
-        if (empty($reductions)) {
+        if (empty($reduction)) {
             return response()->json(
-                ['error' => 'this reduction does not exist bitch'],
+                ['error' => 'this reduction does not exist'],
                 404
             );
         }
-        return $reductions;
+        return $reduction;
     }
 
     /**
@@ -217,7 +215,7 @@ class ReductionController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=404,
-     *         description="Film not found",
+     *         description="Reduction not found",
      *     ),
      * )
      * Update the specified resource in storage.
@@ -249,22 +247,19 @@ class ReductionController extends Controller
             );
         }
 
-        $reductions = Reduction::find($id);
-        if (empty($reductions)) {
+        $reduction = Reduction::find($id);
+        if (empty($reduction)) {
             return response()->json(
                 ['error' => 'Reduction not found'],
                 404
             );
         }
 
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+        $reduction->fill(Input::all());
+        $reduction->save();
 
         return response()->json(
-            ['Reduction' => $reductions],
+            ['Reduction' => $reduction],
             201
         );
     }

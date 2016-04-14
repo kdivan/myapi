@@ -11,4 +11,8 @@ class Reduction extends Model
     // pas besoin donc on disable
     public $timestamps = false;
 
+    /**
+     * @var array
+     */
+    protected $fillable = ['nom', 'date_debut', 'date_fin', 'pourcentage_reduction'];
 }

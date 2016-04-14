@@ -315,7 +315,7 @@ class PersonneController extends Controller
         $personne->fill(Input::all());
         $personne->save();
         return response()->json(
-            ['Fields have correctly update'],
+            ['Personne' => $personne],
             200
         );
     }

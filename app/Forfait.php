@@ -11,6 +11,12 @@ class Forfait extends Model
     // pas besoin donc on disable
     public $timestamps = false;
 
+    /**
+     * @var array
+     */
+    protected $fillable = ['nom', 'resum', 'prix', 'duree_jours'];
+
+
     public function abonnements()
     {
         return $this->hasMany('App\Abonnement', 'id_forfait');

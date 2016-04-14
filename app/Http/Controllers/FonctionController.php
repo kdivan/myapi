@@ -229,19 +229,19 @@ class FonctionController extends Controller
             );
         }
 
-        $fonctions = Fonction::find($id);
-        if (empty($fonctions)) {
+        $fonction = Fonction::find($id);
+        if (empty($fonction)) {
             return response()->json(
                 ['error' => 'fonction not found'],
                 404
             );
         }
 
-        $fonctions->fill(Input::all());
-        $fonctions->save();
+        $fonction->fill(Input::all());
+        $fonction->save();
 
         return response()->json(
-            ['message' => "fonction has been updated successfully"],
+            ['Fonction' => $fonction],
             200
         );
 

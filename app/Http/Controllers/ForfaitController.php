@@ -6,6 +6,7 @@ use App\Forfait;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
 class ForfaitController extends Controller
@@ -105,12 +106,10 @@ class ForfaitController extends Controller
                 422
             );
         }
-        $forfait = new Forfait();
-        $forfait->nom = $request->nom;
-        $forfait->resum = $request->resum;
-        $forfait->prix = $request->prix;
-        $forfait->duree_jours = $request->duree_jours;
+
+        $forfait = Forfait::create(Input::all());
         $forfait->save();
+
         return response()->json(
             ['Forfait' => $forfait],
             201
@@ -252,21 +251,19 @@ class ForfaitController extends Controller
             );
         }
 
-        $forfaits = Forfait::find($id);
-        if (empty($forfaits)) {
+        $forfait = Forfait::find($id);
+        if (empty($forfait)) {
             return response()->json(
                 ['error' => 'Forfait not found'],
                 404
             );
         }
-        $forfaits->nom = $request->nom;
-        $forfaits->resum = $request->resum;
-        $forfaits->prix = $request->prix;
-        $forfaits->duree_jours = $request->duree_jours;
-        $forfaits->save();
+
+        $forfait->fill(Input::all());
+        $forfait->save();
 
         return response()->json(
-            ['Forfait' => $forfaits],
+            ['Forfait' => $forfait],
             201
         );
     }
