@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Model;
  *  @SWG\Property(format="int64", property="id_membre", type="integer", default=4554),
  *  @SWG\Property(property="id_personne", type="integer"),
  *  @SWG\Property(property="id_abonnement", type="integer"),
- *  @SWG\Property(property="date_inscription", type="string"),
- *  @SWG\Property(property="debut_abonnement", type="string"),
+ *  @SWG\Property(property="date_inscription", type="string", format="date"),
+ *  @SWG\Property(property="debut_abonnement", type="string", format="date"),
  *)
  */
 
