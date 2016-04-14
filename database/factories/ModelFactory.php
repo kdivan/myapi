@@ -12,11 +12,13 @@
 */
 
 $factory->define(App\User::class, function (Faker\Generator $faker) {
+    $permission = ['ROLE_CRUD', 'ROLE_READONLY'];
     return [
         'name' => $faker->name,
         'email' => $faker->safeEmail,
-        'password' => bcrypt(str_random(10)),
+        'password' => Hash::make('secret'),
         'remember_token' => str_random(10),
+        'role' => $permission[rand(0,sizeof($permission)-1)]
     ];
 });
 
@@ -34,7 +36,6 @@ $factory->define(App\Forfait::class, function (Faker\Generator $faker) {
 $factory->define(App\Abonnement::class, function (Faker\Generator $faker) {
     return [
         'id_forfait' => rand(1, 20),
-        'email' => $faker->email,
         'debut' => $faker->dateTimeThisMonth,
     ];
 });
@@ -52,7 +53,6 @@ $factory->define(App\Membre::class, function (Faker\Generator $faker) {
 ////Factory historique_membre
 $factory->define(App\HistoriqueMembre::class, function (Faker\Generator $faker) {
     return [
-        'id_historique' => rand(1, 20),
         'id_membre' => rand(1, 20),
         'id_seance' => rand(1, 20),
         'date' => $faker->dateTimeThisDecade,
@@ -81,4 +81,3 @@ $factory->define(App\Reduction::class, function (Faker\Generator $faker) {
         'pourcentage_reduction' => $faker->numberBetween($min = 0, $max = 100),
     ];
 });
-

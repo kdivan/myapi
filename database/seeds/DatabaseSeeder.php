@@ -14,12 +14,14 @@ class DatabaseSeeder extends Seeder
         if (App::environment() === 'production') {
             exit('I just stopped you getting fired.');
         }
-        // $this->call(UsersTableSeeder::class);
-        $this->call(AbonnementsTableSeeder::class);
-        $this->call(ForfaitsTableSeeder::class);
-        $this->call(HistoriqueMembreTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
         $this->call(ReductionsTableSeeder::class);
-        $this->call(SallesTableSeeder::class);
+        $this->call(ForfaitsTableSeeder::class);
+        $this->call(AbonnementsTableSeeder::class);
+
+        $this->call(HistoriqueMembreTableSeeder::class);
+
+        //$this->call(MembresTableSeeder::class);
         $this->call(SeancesTableSeeder::class);
     }
 }
