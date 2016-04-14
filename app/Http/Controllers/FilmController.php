@@ -6,6 +6,7 @@ use App\Film;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
 class FilmController extends Controller
@@ -123,7 +124,7 @@ class FilmController extends Controller
         $validator = Validator::make($request->all(), [
             'titre' => 'required|unique:films',
             'id_genre' => 'exists:genre,id_genre',
-            'id_distribution' => 'exists:genre,id_genre',
+            'id_distribution' => 'exists:distribution,id_distribution',
             'date_debut_affiche' => 'date_format:Y-m-d',
             'date_fin_affiche' => 'date_format:Y-m-d',
             'duree_minutes' => 'integer',
@@ -136,15 +137,7 @@ class FilmController extends Controller
                 422
             );
         }
-        $film = new Film();
-        $film->titre = $request->titre;
-        $film->resum = $request->resum;
-        $film->id_genre = $request->id_genre;
-        $film->id_distributeur = $request->id_distributeur;
-        $film->date_debut_affiche = $request->date_debut_affiche;
-        $film->date_fin_affiche = $request->date_fin_affiche;
-        $film->duree_minutes = $request->duree_minutes;
-        $film->annee_production = $request->annee_production;
+        $film = Film::create($request);
         $film->save();
         return response()->json(
             ['Film' => $film],
@@ -191,15 +184,15 @@ class FilmController extends Controller
                 400
             );
         }
-        $films = Film::find($id);
+        $film = Film::find($id);
         //Test si le film exist
-        if (empty($films)) {
+        if (empty($film)) {
             return response()->json(
                 ['error' => 'this film does not exist bitch'],
                 404
             );
         }
-        return $films;
+        return $film;
     }
 
     /**
@@ -214,8 +207,8 @@ class FilmController extends Controller
      *     @SWG\Parameter(
      *         name="filmId",
      *         in="path",
-     *         description="Pet object that needs to be added to the store",
-     *         required=false,
+     *         description="Film object that needs to be added to the store",
+     *         required=true,
      *         type="integer"
      *     ),
      *     @SWG\Parameter(
@@ -290,7 +283,6 @@ class FilmController extends Controller
      *         response=404,
      *         description="Film not found",
      *     ),
-     *     security={{"petstore_auth":{"write:films", "read:films"}}}
      * )
      * Update the specified resource in storage.
      *
@@ -300,29 +292,42 @@ class FilmController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //Validation des parametres a sauvegarder
+        $validator = Validator::make($request->all(), [
+            'titre' => 'films',
+            'id_genre' => 'exists:genre,id_genre',
+            'id_distribution' => 'exists:distribution,id_distribution',
+            'date_debut_affiche' => 'date_format:Y-m-d',
+            'date_fin_affiche' => 'date_format:Y-m-d',
+            'duree_minutes' => 'integer',
+            'annee_production' => 'integer',
+        ]);
         if (!is_numeric($id)) {
             return response()->json(
                 ['error' => 'Invalid ID supplied'],
                 400
             );
         }
-
-        $films = Film::find($id);
-        if (empty($films)) {
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->errors()->all()],
+                422
+            );
+        }
+        $film = Film::find($id);
+        if (empty($film)) {
             return response()->json(
                 ['error' => 'Film not found'],
                 404
             );
         }
-        $films->titre = $request->titre;
-        $films->resum = $request->resum;
-        $films->id_genre = $request->id_genre;
-        $films->id_distributeur = $request->id_distributeur;
-        $films->date_debut_affiche = $request->date_debut_affiche;
-        $films->date_fin_affiche = $request->date_fin_affiche;
-        $films->duree_minutes = $request->duree_minutes;
-        $films->annee_production = $request->annee_production;
-        $films->save();
+
+        $film->fill(Input::all());
+        $film->save();
+        return response()->json(
+            ['Fields have been correctly update'],
+            200
+        );
     }
 
     /**
@@ -355,14 +360,14 @@ class FilmController extends Controller
                 400
             );
         }
-        $films = Film::find($id);
-        if (empty($films)) {
+        $film = Film::find($id);
+        if (empty($film)) {
             return response()->json(
                 ['error' => 'there is no film for this id'],
                 404
             );
         }
-        $films->delete();
+        $film->delete();
         return response()->json(
             ['message' => "resource deleted successfully"],
             200
@@ -370,6 +375,37 @@ class FilmController extends Controller
     }
 
     /**
+     * @SWG\Get(
+     *     path="/film/getFilmWithGenre/{id}",
+     *     summary="Finds film with genre",
+     *     tags={"film"},
+     *     description="return a film with genre",
+     *     operationId="getFilmWithGenre",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         type="integer",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/Film")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Invalid Id supplied",
+     *     ),
+     *      @SWG\Response(
+     *         response="404",
+     *         description="genre not found",
+     *     ),
+     * )
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
@@ -391,6 +427,5 @@ class FilmController extends Controller
         }
 
         return $films->genre;
-
     }
 }

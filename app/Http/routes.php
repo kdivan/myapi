@@ -16,6 +16,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::resource('film', 'FilmController');
     Route::resource('genre', 'GenreController');
     Route::resource('personne', 'PersonneController');
+    Route::resource('distributeur', 'DistributeurController');
 
     Route::get('film/getFilmWithGenre/{id}', [
         'as' => 'getFilmWithGenre',
@@ -26,8 +27,11 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         'as' => 'getFilmsForGenre',
         'uses' => 'GenreController@getFilmsForGenre'
     ]);
-});
 
+    Route::resource('reduction', 'ReductionController');
+
+
+});
 
 Route::post('authenticate', [
     'as' => 'authenticate',

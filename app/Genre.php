@@ -19,6 +19,10 @@ class Genre extends Model
     //Created_at et updated_at sont ajouté automatiquement mais on en as
     // pas besoin donc on disable
     public $timestamps = false;
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function films()
     {
         return $this->hasMany('App\Film','id_genre');
