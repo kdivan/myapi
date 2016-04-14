@@ -56,14 +56,14 @@ class ReductionController extends Controller
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
-     *         type="string",
+     *         type="date",
      *     ),
      *     @SWG\Parameter(
      *         name="date_fin",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
-     *         type="string",
+     *         type="date",
      *     ),
      *     @SWG\Parameter(
      *         name="pourcentage_reduction",
@@ -187,14 +187,14 @@ class ReductionController extends Controller
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
-     *         type="string",
+     *         type="date",
      *     ),
      *     @SWG\Parameter(
      *         name="date_fin",
      *         in="formData",
      *         description="the fields you want to update",
      *         required=false,
-     *         type="string",
+     *         type="date",
      *     ),
      *     @SWG\Parameter(
      *         name="pourcentage_reduction",
