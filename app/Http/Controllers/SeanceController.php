@@ -313,11 +313,11 @@ class SeanceController extends Controller
             );
         }
 
-        $seance->fill(Seance::all());
+        $seance->fill(Input::all());
         $seance->save();
 
         return response()->json(
-            ['Fields have been correctly update'],
+            ['Seance' => $seance],
             Response::HTTP_OK
         );
 

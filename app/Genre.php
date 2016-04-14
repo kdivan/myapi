@@ -21,6 +21,11 @@ class Genre extends Model
     public $timestamps = false;
 
     /**
+     * @var array
+     */
+    protected $fillable = ['nom'];
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function films()

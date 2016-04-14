@@ -224,7 +224,7 @@ class SalleController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'numero_salle' => 'integer|unique',
+            'numero_salle' => 'integer|unique:salles',
             'nom_salle' => 'string',
             'etage_salle' => 'integer',
             'places' => 'integer',
@@ -252,11 +252,11 @@ class SalleController extends Controller
             );
         }
 
-        $salle->fill(Salle::all());
+        $salle->fill(Input::all());
         $salle->save();
 
         return response()->json(
-            ['Fields have been correctly update'],
+            ['Salle' => $salle],
             Response::HTTP_OK
         );
 
@@ -294,7 +294,7 @@ class SalleController extends Controller
         $salle = Salle::find($id);
         if (empty($salle)) {
             return response()->json(
-                ['error' => 'there is no film for this id'],
+                ['error' => 'there is no salle for this id'],
                 404
             );
         }

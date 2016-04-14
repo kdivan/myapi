@@ -110,7 +110,7 @@ class DistributeurController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:nom',
+            'nom' => 'required|unique:distributeurs',
             'telephone' => 'required',
             'adresse' => 'string',
             'cpostal' => 'integer',
@@ -291,19 +291,19 @@ class DistributeurController extends Controller
             );
         }
 
-        $distributeurs = Distributeur::find($id);
-        if (empty($distributeurs)) {
+        $distributeur = Distributeur::find($id);
+        if (empty($distributeur)) {
             return response()->json(
                 ['error' => 'distributeur not found'],
                 404
             );
         }
 
-        $distributeurs->fill(Input::all());
-        $distributeurs->save();
+        $distributeur->fill(Input::all());
+        $distributeur->save();
 
         return response()->json(
-            ['message' => "distributeur has been updated successfully"],
+            ['distributeur' => $distributeur],
             200
         );
 

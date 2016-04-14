@@ -124,9 +124,9 @@ class FilmController extends Controller
         $validator = Validator::make($request->all(), [
             'titre' => 'required|unique:films',
             'id_genre' => 'exists:genres,id_genre',
-            'id_distribution' => 'exists:distributions,id_distribution',
-            'date_debut_affiche' => 'date_format:Y-m-d',
-            'date_fin_affiche' => 'date_format:Y-m-d',
+            'id_distributeur' => 'exists:distributeurs,id_distributeur',
+            'date_debut_affiche' => 'date_format:Y-m-d|before:date_fin_affiche',
+            'date_fin_affiche' => 'date_format:Y-m-d|after:date_debut_affiche',
             'duree_minutes' => 'integer',
             'annee_production' => 'integer',
         ]);
@@ -295,10 +295,10 @@ class FilmController extends Controller
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
             'titre' => 'string',
-            'id_genre' => 'exists:genre,id_genre',
-            'id_distribution' => 'exists:distribution,id_distribution',
-            'date_debut_affiche' => 'date_format:Y-m-d',
-            'date_fin_affiche' => 'date_format:Y-m-d',
+            'id_genre' => 'exists:genres,id_genre',
+            'id_distributeur' => 'exists:distributeurs,id_distributeur',
+            'date_debut_affiche' => 'date_format:Y-m-d|before:date_fin_affiche',
+            'date_fin_affiche' => 'date_format:Y-m-d|after:date_debut_affiche',
             'duree_minutes' => 'integer',
             'annee_production' => 'integer',
         ]);
@@ -325,7 +325,7 @@ class FilmController extends Controller
         $film->fill(Input::all());
         $film->save();
         return response()->json(
-            ['Fields have been correctly update'],
+            ['Film' => $film],
             200
         );
     }
