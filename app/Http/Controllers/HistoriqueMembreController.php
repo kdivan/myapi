@@ -265,7 +265,7 @@ class HistoriqueMembreController extends Controller
      *   tags={"historiqueMembre"},
      *   summary="Delete historiqueMembre order by ID",
      *   description="Delete a historiqueMembre with its ID",
-     *   operationId="deleteHistoriqueMembre,
+     *   operationId="deleteHistoriqueMembre",
      *   produces={"application/json"},
      *   @SWG\Parameter(
      *     name="historiqueMembreId",
@@ -275,7 +275,7 @@ class HistoriqueMembreController extends Controller
      *     type="integer"
      *   ),
      *   @SWG\Response(response=400, description="Invalid ID supplied"),
-     *   @SWG\Response(response=404, description="Order not found")
+     *   @SWG\Response(response=404, description="Order not found"),
      * )
      * Remove the specified resource from storage.
      *
