@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
 class Personne extends Model
 {
     public $primaryKey = "id_personne";
+    protected $fillable = ["id_personne","nom", "prenom", "date_naissance", "email", "cpostal", "ville", "pays"];
 
     public function fonctions()
     {

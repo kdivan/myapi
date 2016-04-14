@@ -30,8 +30,8 @@ class PersonneController extends Controller
      */
     public function index()
     {
-        $films = Film::all()->take(10);
-        return $films;
+        $personne= Personne::all()->take(10);
+        return $personne;
     }
 
     /**
@@ -136,15 +136,7 @@ class PersonneController extends Controller
                 422
             );
         }
-        $personne = new Personne();
-        $personne->nom = $request->nom;
-        $personne->prenom = $request->prenom;
-        $personne->date_naissance = $request->date_naissance;
-        $personne->email = $request->email;
-        $personne->adresse = $request->adresse;
-        $personne->cpostal = $request->cpostal;
-        $personne->ville = $request->ville;
-        $personne->pays = $request->pays;
+        $personne = Distributeur::create($request);
         $personne->save();
         return response()->json(
             ['Personne' => $personne],
@@ -193,7 +185,7 @@ class PersonneController extends Controller
             );
         }
         $personne = Personne::find($id);
-        //Test si le film exist
+        //Test si la personne exist
         if (empty($personne)) {
             return response()->json(
                 ['error' => 'this personne does not exist'],
@@ -308,21 +300,15 @@ class PersonneController extends Controller
             );
         }
 
-        $personne = Film::find($id);
-        if (empty($films)) {
+        $personne = Personne::find($id);
+        if (empty($personne)) {
             return response()->json(
-                ['error' => 'Film not found'],
+                ['error' => 'Personne not found'],
                 404
             );
         }
-        $personne->nom = $request->nom;
-        $personne->prenom = $request->prenom;
-        $personne->date_naissance = $request->date_naissance;
-        $personne->email = $request->email;
-        $personne->adresse = $request->adresse;
-        $personne->cpostal = $request->cpostal;
-        $personne->ville = $request->ville;
-        $personne->pays = $request->pays;
+
+        $personne->fill(Input::all());
         $personne->save();
         return response()->json(
             ['Fields have correctly update'],
@@ -360,14 +346,14 @@ class PersonneController extends Controller
                 400
             );
         }
-        $film = Film::find($id);
-        if (empty($film)) {
+        $personne = Personne::find($id);
+        if (empty($personne)) {
             return response()->json(
-                ['error' => 'there is no film for this id'],
+                ['error' => 'there is no personne for this id'],
                 404
             );
         }
-        $film->delete();
+        $personne->delete();
         return response()->json(
             ['message' => "resource deleted successfully"],
             200
