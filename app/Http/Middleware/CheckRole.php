@@ -4,7 +4,11 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class CheckRole{
+class CheckRole
+{
+    private $roleHirarchy = array(
+        'ROLE_CRUD' => array('ROLE_READONLY')
+    );
     /**
      * Handle an incoming request.
      *
@@ -16,7 +20,9 @@ class CheckRole{
     {
         // Check if a role is required for the route, and
         // if so, ensure that the user has that role.
-        if($request->user()->role == $role || !$role)
+        //ROLEHIRARCHY TOCHANGE
+        if($request->user()->role == $role ||
+            in_array($request->user()->role, array_keys($this->roleHirarchy)) || !$role)
         {
             return $next($request);
         }

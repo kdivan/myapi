@@ -93,8 +93,8 @@ class ReductionController extends Controller
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
             'nom' => 'required|unique:reductions',
-            'date_debut' => 'required|date_format:Y-m-d|before:date_fin',
-            'date_fin' => 'required|date_format:Y-m-d|after:date_debut',
+            'date_debut' => 'required|date_format:Y-m-d H:i:s|before:date_fin',
+            'date_fin' => 'required|date_format:Y-m-d H:i:s|after:date_debut',
             'pourcentage_reduction' => 'required|integer|between:0,100',
         ]);
 
@@ -230,8 +230,8 @@ class ReductionController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nom' => 'required|unique:reductions',
-            'date_debut' => 'required|date_format:Y-m-d|before:date_fin',
-            'date_fin' => 'required|date_format:Y-m-d|after:date_debut',
+            'date_debut' => 'required|date_format:Y-m-d H:i:s|before:date_fin',
+            'date_fin' => 'required|date_format:Y-m-d H:i:s|after:date_debut',
             'pourcentage_reduction' => 'required|integer|between:0,100',
         ]);
 
