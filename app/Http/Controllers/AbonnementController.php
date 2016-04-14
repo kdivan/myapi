@@ -6,6 +6,7 @@ use App\Abonnement;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -90,7 +91,7 @@ class AbonnementController extends Controller
                 422
             );
         }
-        $abonnements = Abonnement::create($request);
+        $abonnements = Abonnement::create(Input::all());
         $abonnements->save();
 
         return response()->json(
@@ -159,10 +160,17 @@ class AbonnementController extends Controller
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
+     *         name="abonnementId",
+     *         in="path",
+     *         description="the fields you want to update",
+     *         required=true,
+     *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
      *         name="id_forfait",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=true,
+     *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
