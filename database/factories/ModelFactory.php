@@ -58,6 +58,7 @@ $factory->define(App\HistoriqueMembre::class, function (Faker\Generator $faker) 
         'date' => $faker->dateTimeThisDecade,
     ];
 });
+
 //Factory seance
 $factory->define(App\Seance::class, function (Faker\Generator $faker) {
     return [
