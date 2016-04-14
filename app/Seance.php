@@ -16,9 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  *  @SWG\Property(format="int64", property="id_personne_menage", type="integer"),
  *  @SWG\Property(property="debut_seance", type="date", default="2011-01-12"),
  *  @SWG\Property(format="date", property="fin_seance", type="date", default="2011-01-12"),
- *  @SWG\Property(property="ouvreur", ref="#/definitions/Personne")
- *  @SWG\Property(property="technicien", ref="#/definitions/Personne")
- *  @SWG\Property(property="menage", ref="#/definitions/Personne")
+ *  @SWG\Property(property="ouvreur", ref="#/definitions/Personne"),
+ *  @SWG\Property(property="technicien", ref="#/definitions/Personne"),
+ *  @SWG\Property(property="menage", ref="#/definitions/Personne"),
  *)
  */
 class Seance extends Model

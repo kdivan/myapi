@@ -24,6 +24,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::resource('forfait', 'ForfaitController');
         Route::resource('reduction', 'ReductionController');
         Route::resource('abonnement', 'AbonnementController');
+        Route::resource('historiqueMembre', 'HistoriqueMembreController');
 
         Route::get('film/getFilmWithGenre/{id}', [
             'as' => 'getFilmWithGenre',
@@ -57,7 +58,9 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('reduction/{reduction}', 'ReductionController@show');
         Route::get('abonnement', 'AbonnementController@index');
         Route::get('abonnement/{abonnement}', 'AbonnementController@show');
-        
+        Route::get('historiqueMembre', 'HistoriqueMembreController@index');
+        Route::get('historiqueMembre/{historiqueMembre}', 'HistoriqueMembreController@show');
+
         Route::get('film/getFilmWithGenre/{id}', [
             'as' => 'getFilmWithGenre',
             'uses' => 'FilmController@getFilmWithGenre'

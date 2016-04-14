@@ -20,6 +20,7 @@ class HistoriqueMembre extends Model
 
     public $primaryKey = "id_historique";
     public $timestamps = false;
+    public $table = "historique_membre";
 
     /**
      * @var array
