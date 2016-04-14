@@ -16,13 +16,16 @@ use Illuminate\Database\Eloquent\Model;
  *  @SWG\Property(property="cpostal", type="string"),
  *  @SWG\Property(property="ville", type="string"),
  *  @SWG\Property(property="pays", type="string"),
- *  @SWG\Property(property="fonctions", ref="#/definitions/Fonction")
  *)
  */
 
 class Personne extends Model
 {
     public $primaryKey = "id_personne";
+    public $timestamps = false;
+    /**
+     * @var array
+     */
     protected $fillable = ["id_personne","nom", "prenom", "date_naissance", "email", "cpostal", "ville", "pays"];
 
     public function fonctions()

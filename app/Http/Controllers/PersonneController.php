@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Personne;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 
 class PersonneController extends Controller
 {
     /**
-     * @SWG\Get(path="/Personne",
+     * @SWG\Get(path="/personne",
      *   tags={"personne"},
      *   operationId="getPersonne",
      *   summary="Display a list of Personne.",
@@ -35,7 +38,7 @@ class PersonneController extends Controller
     }
 
     /**
-     * @SWG\Post(path="/Personne",
+     * @SWG\Post(path="/personne",
      *     tags={"personne"},
      *     summary="add 1 personne.",
      *     operationId="addPersonne",
@@ -136,7 +139,8 @@ class PersonneController extends Controller
                 422
             );
         }
-        $personne = Distributeur::create($request);
+
+        $personne = Personne::create(Input::all());
         $personne->save();
         return response()->json(
             ['Personne' => $personne],
@@ -208,28 +212,28 @@ class PersonneController extends Controller
      *         name="personneId",
      *         in="path",
      *         description="Personne object that needs to be added to the store",
-     *         required=true,
+     *         required=false,
      *         type="integer"
      *     ),
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
      *         description="Personne's lastname you want to update",
-     *         required=true,
+     *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="prenom",
      *         in="formData",
      *         description="Personne's firstname you want to update",
-     *         required=true,
+     *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="date_naissance",
      *         in="formData",
      *         description="Personne's birthday you want to update",
-     *         required=true,
+     *         required=false,
      *         format="date",
      *         type="string",
      *     ),
@@ -237,7 +241,7 @@ class PersonneController extends Controller
      *         name="email",
      *         in="formData",
      *         description="Personne's email you want to update",
-     *         required=true,
+     *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
@@ -251,21 +255,21 @@ class PersonneController extends Controller
      *         name="cpostal",
      *         in="formData",
      *         description="Personne's code postal you want to update",
-     *         required=true,
+     *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="ville",
      *         in="formData",
      *         description="Personne's ville you want to update",
-     *         required=true,
+     *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="pays",
      *         in="formData",
      *         description="Personne's country you want to update",
-     *         required=true,
+     *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Response(
