@@ -44,34 +44,34 @@ class SalleController extends Controller
      *     tags={"salle"},
      *     summary="Add a new salle.",
      *     operationId="addSalle",
-     *     description="This is to insert a salle",
+     *     description="This is to insert a new salle in the database",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="numero_salle",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the number of the room",
      *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="nom_salle",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the name of the room",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="etage_salle",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the floor of the room",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="places",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the capacity of the room",
      *         required=false,
      *         type="integer",
      *     ),
@@ -112,9 +112,9 @@ class SalleController extends Controller
     /**
      * @SWG\Get(path="/salle/{salleId}",
      *      tags={"salle"},
-     *      summary="Show 1 row",
+     *      summary="Show a salle",
      *      operationId="getSalleById",
-     *      description="Show one row",
+     *      description="Show a salle with ID provided",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="salleId",
@@ -164,36 +164,36 @@ class SalleController extends Controller
      * @SWG\Put(
      *     path="/salle/{salleId}",
      *     tags={"salle"},
-     *     operationId="update seance",
-     *     summary="Update an existing seance",
+     *     operationId="update an existing seance",
+     *     summary="To update an existing seance with ID provided",
      *     description="",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *      @SWG\Parameter(
      *         name="numero_salle",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="New number of the room",
      *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="nom_salle",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="New name of the room",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="etage_salle",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="New floor of the room",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="places",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="New capacity of the room",
      *         required=false,
      *         type="integer",
      *     ),
@@ -224,7 +224,7 @@ class SalleController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'numero_salle' => 'integer|unique',
+            'numero_salle' => 'integer|unique:salles',
             'nom_salle' => 'string',
             'etage_salle' => 'integer',
             'places' => 'integer',
@@ -252,11 +252,11 @@ class SalleController extends Controller
             );
         }
 
-        $salle->fill(Salle::all());
+        $salle->fill(Input::all());
         $salle->save();
 
         return response()->json(
-            ['Fields have been correctly update'],
+            ['Salle' => $salle],
             Response::HTTP_OK
         );
 
@@ -265,7 +265,7 @@ class SalleController extends Controller
     /**
      * @SWG\Delete(path="/salle/{salleId}",
      *   tags={"salle"},
-     *   summary="Delete salle by id",
+     *   summary="Delete salled",
      *   operationId="deleteSeance",
      *   produces={"application/json"},
      *   @SWG\Parameter(
@@ -294,7 +294,7 @@ class SalleController extends Controller
         $salle = Salle::find($id);
         if (empty($salle)) {
             return response()->json(
-                ['error' => 'there is no film for this id'],
+                ['error' => 'there is no salle for this id'],
                 404
             );
         }

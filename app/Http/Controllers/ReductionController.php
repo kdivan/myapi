@@ -6,6 +6,7 @@ use App\Reduction;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
 class ReductionController extends Controller
@@ -39,36 +40,36 @@ class ReductionController extends Controller
     /**
      * @SWG\POST(path="/reduction",
      *     tags={"reduction"},
-     *     summary="add 1 reduction",
+     *     summary="add a new reduction",
      *     operationId="addReduction",
-     *     description="This is to insert a reduction",
+     *     description="This is to insert a reduction in the databse",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the name of the reduction",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="date_debut",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the starting date of the reduction",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="date_fin",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the ending date of the reduction",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="pourcentage_reduction",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the percentage of the reduction",
      *         required=false,
      *         type="integer",
      *     ),
@@ -104,14 +105,11 @@ class ReductionController extends Controller
                 422
             );
         }
-        $reductions = new Reduction();
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+        $reduction = Reduction::create(Input::all());
+        $reduction->save();
+
         return response()->json(
-            ['Reduction' => $reductions],
+            ['Reduction' => $reduction],
             201
         );
     }
@@ -119,9 +117,9 @@ class ReductionController extends Controller
     /**
      * @SWG\Get(path="/reduction/{reductionId}",
      *      tags={"reduction"},
-     *      summary="show 1 row",
+     *      summary="show a reduction",
      *      operationId="getReductionById",
-     *      description="Show one row",
+     *      description="Show a reduction with ID provided",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="reductionId",
@@ -155,15 +153,15 @@ class ReductionController extends Controller
                 400
             );
         }
-        $reductions = Reduction::find($id);
+        $reduction = Reduction::find($id);
         //Test si le reduction exist
-        if (empty($reductions)) {
+        if (empty($reduction)) {
             return response()->json(
-                ['error' => 'this reduction does not exist bitch'],
+                ['error' => 'this reduction does not exist'],
                 404
             );
         }
-        return $reductions;
+        return $reduction;
     }
 
     /**
@@ -172,34 +170,34 @@ class ReductionController extends Controller
      *     tags={"reduction"},
      *     operationId="updateReduction",
      *     summary="Update an existing reduction",
-     *     description="",
+     *     description="To update an existing reduction with ID provided",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the new name of the reduction",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="date_debut",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the new starting date of the reduction",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="date_fin",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the new ending date of the reduction",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="pourcentage_reduction",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the new percentage of the reduction",
      *         required=false,
      *         type="integer",
      *     ),
@@ -217,7 +215,7 @@ class ReductionController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=404,
-     *         description="Film not found",
+     *         description="Reduction not found",
      *     ),
      * )
      * Update the specified resource in storage.
@@ -249,22 +247,19 @@ class ReductionController extends Controller
             );
         }
 
-        $reductions = Reduction::find($id);
-        if (empty($reductions)) {
+        $reduction = Reduction::find($id);
+        if (empty($reduction)) {
             return response()->json(
                 ['error' => 'Reduction not found'],
                 404
             );
         }
 
-        $reductions->nom = $request->nom;
-        $reductions->date_debut = $request->date_debut;
-        $reductions->date_fin = $request->date_fin;
-        $reductions->pourcentage_reduction = $request->pourcentage_reduction;
-        $reductions->save();
+        $reduction->fill(Input::all());
+        $reduction->save();
 
         return response()->json(
-            ['Reduction' => $reductions],
+            ['Reduction' => $reduction],
             201
         );
     }
@@ -272,8 +267,8 @@ class ReductionController extends Controller
     /**
      * @SWG\Delete(path="/reduction/{reductionId}",
      *   tags={"reduction"},
-     *   summary="Delete reduction by ID",
-     *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
+     *   summary="Delete a reduction",
+     *   description="To delete a reduction with ID provided",
      *   operationId="deleteReduction",
      *   produces={"application/json"},
      *   @SWG\Parameter(

@@ -6,6 +6,7 @@ use App\Forfait;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
 class ForfaitController extends Controller
@@ -14,7 +15,7 @@ class ForfaitController extends Controller
      * @SWG\Get(path="/forfait",
      *   tags={"forfait"},
      *   operationId="getForfait",
-     *   summary="Display a list of forfaits.",
+     *   summary="Display a list of forfait.",
      *   description="This can only be done by the logged in user.",
      *   produces={"application/json"},
      *   @SWG\Response(
@@ -39,36 +40,36 @@ class ForfaitController extends Controller
     /**
      * @SWG\Post(path="/forfait",
      *     tags={"forfait"},
-     *     summary="add 1 forfait.",
+     *     summary="add a new forfait",
      *     operationId="addForfait",
-     *     description="This is to insert a forfait",
+     *     description="This is to insert a new forfait ine the database",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the name of the forfait",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="resum",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the summary of the forfait",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="prix",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the cost of the forfait",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="duree_jours",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the duration of the forfait",
      *         required=false,
      *         type="integer",
      *     ),
@@ -105,12 +106,10 @@ class ForfaitController extends Controller
                 422
             );
         }
-        $forfait = new Forfait();
-        $forfait->nom = $request->nom;
-        $forfait->resum = $request->resum;
-        $forfait->prix = $request->prix;
-        $forfait->duree_jours = $request->duree_jours;
+
+        $forfait = Forfait::create(Input::all());
         $forfait->save();
+
         return response()->json(
             ['Forfait' => $forfait],
             201
@@ -120,9 +119,9 @@ class ForfaitController extends Controller
     /**
      * @SWG\Get(path="/forfait/{forfaitId}",
      *      tags={"forfait"},
-     *      summary="show 1 forfait",
+     *      summary="show a forfait",
      *      operationId="getForfaitById",
-     *      description="Show one row",
+     *      description="Show the forfait with ID provided",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="forfaitId",
@@ -172,35 +171,35 @@ class ForfaitController extends Controller
      *     path="/forfait/{forfaitId}",
      *     tags={"forfait"},
      *     operationId="updateForfait",
-     *     summary="Update an existing forfait",
-     *     description="",
+     *     summary="To update a forfait",
+     *     description="Update an existing forfait with ID provided",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="New name of the forfait",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="resum",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="New summary of the forfait",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="prix",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="New price of the forfait",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="duree_jours",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="New duration of the forfait",
      *         required=false,
      *         type="integer",
      *     ),
@@ -252,21 +251,19 @@ class ForfaitController extends Controller
             );
         }
 
-        $forfaits = Forfait::find($id);
-        if (empty($forfaits)) {
+        $forfait = Forfait::find($id);
+        if (empty($forfait)) {
             return response()->json(
                 ['error' => 'Forfait not found'],
                 404
             );
         }
-        $forfaits->nom = $request->nom;
-        $forfaits->resum = $request->resum;
-        $forfaits->prix = $request->prix;
-        $forfaits->duree_jours = $request->duree_jours;
-        $forfaits->save();
+
+        $forfait->fill(Input::all());
+        $forfait->save();
 
         return response()->json(
-            ['Forfait' => $forfaits],
+            ['Forfait' => $forfait],
             201
         );
     }
@@ -274,8 +271,8 @@ class ForfaitController extends Controller
     /**
      * @SWG\Delete(path="/forfait/{forfaitId}",
      *   tags={"forfait"},
-     *   summary="Delete forfait by ID",
-     *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
+     *   summary="Delete a forfait",
+     *   description="To delete a forfait with ID orderer",
      *   operationId="deleteForfait",
      *   produces={"application/json"},
      *   @SWG\Parameter(

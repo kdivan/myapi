@@ -43,48 +43,48 @@ class SeanceController extends Controller
      *     tags={"seance"},
      *     summary="Add a new seance.",
      *     operationId="addSeance",
-     *     description="This is to insert a seance",
+     *     description="This is to insert a new seance ine the database",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="id_film",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the film id of the seance",
      *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="id_salle",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the salle id of the seance",
      *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="id_personne_ouvreur",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the ouvreur id of the seance",
      *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="id_personne_technicien",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the technicien id of the seance",
      *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="id_personne_menage",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the personne menage id of the seance",
      *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="debut_seance",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the starting time of the seancee",
      *         required=true,
      *         type="string",
      *         format="date-time",
@@ -92,7 +92,7 @@ class SeanceController extends Controller
      *     @SWG\Parameter(
      *         name="fin_seance",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the ending time of the seance",
      *         required=true,
      *         type="string",
      *         format="date-time",
@@ -143,9 +143,9 @@ class SeanceController extends Controller
     /**
      * @SWG\Get(path="/seance/{seanceId}",
      *      tags={"seance"},
-     *      summary="Show 1 row",
+     *      summary="Show a seance",
      *      operationId="getSeanceById",
-     *      description="Show one row",
+     *      description="Show an existing seance with ID provided",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="seanceId",
@@ -194,64 +194,64 @@ class SeanceController extends Controller
      * @SWG\Put(
      *     path="/seance/{seanceId}",
      *     tags={"seance"},
-     *     operationId="update seance",
-     *     summary="Update an existing seance",
-     *     description="",
+     *     operationId="update a seance",
+     *     summary="Update a seance",
+     *     description="To update an existing seance with ID provided",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="seanceId",
      *         in="path",
-     *         description="Seance object",
+     *         description="Enter the id of the seance to update",
      *         required=false,
      *         type="integer"
      *     ),
      *     @SWG\Parameter(
      *         name="id_film",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the film id of the seance to update",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="id_salle",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the salle id of the seance to update",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="id_personne_ouvreur",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the personne ouvreur id of the seance to update",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="id_personne_technicien",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the technicien id of the seance to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="id_personne_menage",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the personne menage id of the seance to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="debut_seance",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the starting time of the seance to update",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="fin_seance",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the ending time of the seance to update",
      *         required=false,
      *         type="string",
      *     ),
@@ -313,11 +313,11 @@ class SeanceController extends Controller
             );
         }
 
-        $seance->fill(Seance::all());
+        $seance->fill(Input::all());
         $seance->save();
 
         return response()->json(
-            ['Fields have been correctly update'],
+            ['Seance' => $seance],
             Response::HTTP_OK
         );
 
@@ -327,7 +327,7 @@ class SeanceController extends Controller
     /**
      * @SWG\Delete(path="/seance/{seanceId}",
      *   tags={"seance"},
-     *   summary="Delete seance by id",
+     *   summary="Delete a seance",
      *   operationId="deleteSeance",
      *   produces={"application/json"},
      *   @SWG\Parameter(

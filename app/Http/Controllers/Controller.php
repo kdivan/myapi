@@ -15,11 +15,11 @@ use Illuminate\Foundation\Auth\Access\AuthorizesResources;
  *     basePath="/",
  *     @SWG\Info(
  *         version="1.0.0",
- *         title="Ma premiere api laravel",
- *         description="This is a sample server Petstore server.  You can find out more about Swagger at <a href=""http://swagger.io"">http://swagger.io</a> or on irc.freenode.net, #swagger.  For this sample, you can use the api key ""special-key"" to test the authorization filters",
- *         termsOfService="http://helloreverb.com/terms/",
+ *         title="My first laravel api based on the cinema",
+ *         description="Thanks to this api you can find information about your favorite films... In ordrer to use it, you will need to add api_key parameter with its token.",
+ *         termsOfService="http://www.esgi.fr/",
  *         @SWG\Contact(
- *             email="airskual@yahoo.com"
+ *             email="equipe8@esgi.fr"
  *         ),
  *         @SWG\License(
  *             name="Apache 2.0",

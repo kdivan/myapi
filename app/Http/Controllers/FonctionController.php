@@ -42,29 +42,29 @@ class FonctionController extends Controller
     /**
      * @SWG\Post(path="/fonction",
      *     tags={"fonction"},
-     *     summary="add 1 fonction.",
+     *     summary="To add a new fonction.",
      *     operationId="addFonction",
-     *     description="This is to insert a fonction",
+     *     description="This is to insert a new fonction ine the database.",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the field nom you want to update",
+     *         description="Enter the name of the fonction",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="salaire",
      *         in="formData",
-     *         description="the field salaire you want to update",
+     *         description="Enter the salary for this fonction",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="cadre",
      *         in="formData",
-     *         description="the field cadre you want to update",
+     *         description="Enter the type of the fonction (cadre or not cadre, that is the question...)",
      *         required=true,
      *         type="boolean",
      *     ),
@@ -111,9 +111,9 @@ class FonctionController extends Controller
     /**
      * @SWG\Get(path="/fonction/{fonctionId}",
      *      tags={"fonction"},
-     *      summary="show 1 row of fonction",
+     *      summary="To show the information about the fonction",
      *      operationId="getFonctionById",
-     *      description="Show one row of fonction",
+     *      description="Show all the information about the fonction with ID provided",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="fonctionId",
@@ -165,34 +165,34 @@ class FonctionController extends Controller
      *     tags={"fonction"},
      *     operationId="updateFonction",
      *     summary="Update an existing fonction",
-     *     description="",
+     *     description="Update an existing fonction with its ID provided",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="fonctionId",
      *         in="path",
-     *         description="Update the information of a fonction",
+     *         description="Enter the id of the fonction to update",
      *         required=true,
      *         type="integer"
      *     ),
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the field nom you want to update",
+     *         description="Enter the new name of the fonction",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="salaire",
      *         in="formData",
-     *         description="the field telephone you want to update",
+     *         description="Enter the new salary for this fonction",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="cadre",
      *         in="formData",
-     *         description="the field cadre you want to update",
+     *         description="Enter the new type of the fonction",
      *         required=false,
      *         type="boolean",
      *     ),
@@ -229,19 +229,19 @@ class FonctionController extends Controller
             );
         }
 
-        $fonctions = Fonction::find($id);
-        if (empty($fonctions)) {
+        $fonction = Fonction::find($id);
+        if (empty($fonction)) {
             return response()->json(
                 ['error' => 'fonction not found'],
                 404
             );
         }
 
-        $fonctions->fill(Input::all());
-        $fonctions->save();
+        $fonction->fill(Input::all());
+        $fonction->save();
 
         return response()->json(
-            ['message' => "fonction has been updated successfully"],
+            ['Fonction' => $fonction],
             200
         );
 
@@ -250,8 +250,8 @@ class FonctionController extends Controller
     /**
      * @SWG\Delete(path="/fonction/{fonctionId}",
      *   tags={"fonction"},
-     *   summary="Delete fonction order by ID",
-     *   description="Delete a fonction with his ID",
+     *   summary="To delete fonction",
+     *   description="Delete a fonction with its ID provided",
      *   operationId="deleteFonction",
      *   produces={"application/json"},
      *   @SWG\Parameter(

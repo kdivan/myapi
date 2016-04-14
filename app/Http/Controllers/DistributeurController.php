@@ -45,48 +45,48 @@ class DistributeurController extends Controller
      *     tags={"distributeur"},
      *     summary="add 1 distributeur.",
      *     operationId="addDistributeur",
-     *     description="This is to insert a distributor",
+     *     description="This is to insert a new distributor in the database.",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the field name you want to update",
+     *         description="Enter the name of the distibutor",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="telephone",
      *         in="formData",
-     *         description="the field telephone you want to update",
+     *         description="Enter the phone number of the distibutor",
      *         required=true,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="adresse",
      *         in="formData",
-     *         description="the field adresse you want to update",
+     *         description="Enter the address of the distibutor",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="cpostal",
      *         in="formData",
-     *         description="the fields you want to update",
+     *         description="Enter the zipcode of the distibutor",
      *         required=false,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="ville",
      *         in="formData",
-     *         description="the field ville you want to update",
+     *         description="Enter the town of the distibutor",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="pays",
      *         in="formData",
-     *         description="the field pays you want to update",
+     *         description="Enter the country of the distibutor",
      *         required=false,
      *         type="string",
      *     ),
@@ -110,7 +110,7 @@ class DistributeurController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|unique:nom',
+            'nom' => 'required|unique:distributeurs',
             'telephone' => 'required',
             'adresse' => 'string',
             'cpostal' => 'integer',
@@ -136,9 +136,9 @@ class DistributeurController extends Controller
     /**
      * @SWG\Get(path="/distributeur/{distributeurId}",
      *      tags={"distributeur"},
-     *      summary="show 1 row",
+     *      summary="Show the requested distributeur",
      *      operationId="getDistributeurById",
-     *      description="Show one row of distributor",
+     *      description="Show the requested distributeur (by ID)",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          name="distributeurId",
@@ -203,42 +203,42 @@ class DistributeurController extends Controller
      *     @SWG\Parameter(
      *         name="nom",
      *         in="formData",
-     *         description="the field nom you want to update",
+     *         description="Enter the new name of the distributeur",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="telephone",
      *         in="formData",
-     *         description="the field telephone you want to update",
+     *         description="Enter the new phone number of the distributeur",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="adresse",
      *         in="formData",
-     *         description="the field adresse you want to update",
+     *         description="Enter the new address of the distributeur",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="cpostal",
      *         in="formData",
-     *         description="the field cpostal you want to update",
+     *         description="Enter the new zipcode of the distributeur",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="ville",
      *         in="formData",
-     *         description="the field ville you want to update",
+     *         description="Enter the new city of the distributeur",
      *         required=false,
      *         type="string",
      *     ),
      *     @SWG\Parameter(
      *         name="pays",
      *         in="formData",
-     *         description="the field pays you want to update",
+     *         description="Enter the new country of the distributeur",
      *         required=false,
      *         type="string",
      *     ),
@@ -291,19 +291,19 @@ class DistributeurController extends Controller
             );
         }
 
-        $distributeurs = Distributeur::find($id);
-        if (empty($distributeurs)) {
+        $distributeur = Distributeur::find($id);
+        if (empty($distributeur)) {
             return response()->json(
                 ['error' => 'distributeur not found'],
                 404
             );
         }
 
-        $distributeurs->fill(Input::all());
-        $distributeurs->save();
+        $distributeur->fill(Input::all());
+        $distributeur->save();
 
         return response()->json(
-            ['message' => "distributeur has been updated successfully"],
+            ['distributeur' => $distributeur],
             200
         );
 
@@ -312,7 +312,7 @@ class DistributeurController extends Controller
     /**
      * @SWG\Delete(path="/distributeur/{distributeurId}",
      *   tags={"distributeur"},
-     *   summary="Delete distributeur order by ID",
+     *   summary="To delete a distributeur",
      *   description="Delete a distributeur with his ID",
      *   operationId="deleteDistributeur",
      *   produces={"application/json"},
