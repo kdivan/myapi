@@ -28,6 +28,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     ]);
 
     Route::resource('reduction', 'ReductionController');
+    Route::resource('membre', 'MembreController');
 
 
 });
