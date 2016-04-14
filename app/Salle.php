@@ -23,4 +23,8 @@ class Salle extends Model
     public $timestamps = false;
 
     protected $fillable = ['numero_salle', 'nom_salle', 'etage_salle', 'places'];
+
+    public function seances() {
+        return $this->hasMany('App\Seance', 'id_salle');
+    }
 }
