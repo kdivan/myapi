@@ -36,6 +36,11 @@ class Film extends Model
         return $this->belongsTo('App\Genre', 'id_genre');
     }
 
+    public function seances()
+    {
+        return $this->hasMany('App\Seance', 'id_film');
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

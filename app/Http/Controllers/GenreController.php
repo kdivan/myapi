@@ -124,7 +124,22 @@ class GenreController extends Controller
      */
     public function show($id)
     {
-        //
+        //On test le format d'entrée de l'ID
+        if (!is_numeric($id)) {
+            return response()->json(
+                ['error' => 'Invalid ID supplied'],
+                400
+            );
+        }
+        $genre = Genre::find($id);
+        //Test si le film exist
+        if (empty($genre)) {
+            return response()->json(
+                ['error' => 'this film does not exist bitch'],
+                404
+            );
+        }
+        return $genre;
     }
 
     /**

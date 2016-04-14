@@ -258,7 +258,6 @@ class DistributeurController extends Controller
      *         response=404,
      *         description="Distributeur not found",
      *     ),
-     *     security={{"petstore_auth":{"write:distributeur", "read:distributeur"}}}
      * )
      * Update the specified resource in storage.
      *
@@ -268,6 +267,23 @@ class DistributeurController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //Validation des parametres a sauvegarder
+        $validator = Validator::make($request->all(), [
+            'nom' => 'string',
+            'telephone' => 'string',
+            'adresse' => 'string',
+            'cpostal' => 'integer',
+            'ville' => 'string',
+            'pays' => 'string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->errors()->all()],
+                422
+            );
+        }
+
         if (!is_numeric($id)) {
             return response()->json(
                 ['error' => 'Invalid ID supplied'],
