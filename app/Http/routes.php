@@ -32,6 +32,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 
     Route::resource('forfait', 'ForfaitController');
     Route::resource('reduction', 'ReductionController');
+    Route::resource('abonnement', 'AbonnementController');
 
 
 });
