@@ -294,7 +294,7 @@ class FilmController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'titre' => 'films',
+            'titre' => 'string',
             'id_genre' => 'exists:genre,id_genre',
             'id_distribution' => 'exists:distribution,id_distribution',
             'date_debut_affiche' => 'date_format:Y-m-d',

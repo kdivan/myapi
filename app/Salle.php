@@ -21,4 +21,6 @@ class Salle extends Model
     //Created_at et updated_at sont ajouté automatiquement mais on en as
     // pas besoin donc on disable
     public $timestamps = false;
+
+    protected $fillable = ['numero_salle', 'nom_salle', 'etage_salle', 'places'];
 }

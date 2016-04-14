@@ -305,7 +305,7 @@ class SeanceController extends Controller
             );
         }
 
-        $seance = Film::find($id);
+        $seance = Seance::find($id);
         if (empty($seance)) {
             return response()->json(
                 ['error' => 'Film not found'],
@@ -313,18 +313,13 @@ class SeanceController extends Controller
             );
         }
 
-        if (null !== $request->id_film)
-        {
-            $seance->id_film = $request->id_film;
-        }
-
-        $seance->id_salle = $request->id_salle;
-        $seance->id_personne_ouvreur = $request->id_personne_ouvreur;
-        $seance->id_personne_technicien = $request->id_personne_technicien;
-        $seance->id_personne_menage = $request->id_personne_menage;
-        $seance->debut_seance = $request->debut_seance;
-        $seance->fin_seance = $request->fin_seance;
+        $seance->fill(Seance::all());
         $seance->save();
+
+        return response()->json(
+            ['Fields have been correctly update'],
+            Response::HTTP_OK
+        );
 
     }
 
