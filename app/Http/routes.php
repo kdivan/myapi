@@ -16,6 +16,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
     Route::resource('film', 'FilmController');
     Route::resource('genre', 'GenreController');
     Route::resource('distributeur', 'DistributeurController');
+    Route::resource('historiqueMembre', 'HistoriqueMembreController');
 
     Route::get('film/getFilmWithGenre/{id}', [
         'as' => 'getFilmWithGenre',
