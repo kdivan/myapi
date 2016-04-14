@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
  *  @SWG\Property(property="cadre", type="boolean"),
  *)
  */
-
 class Fonction extends Model
 {
     public $primaryKey = "id_fonction";
@@ -28,7 +27,8 @@ class Fonction extends Model
     /**
      * @return mixed
      */
-    public function employes() {
-        return $this->ManytoMany('App\Employes', 'id_employe');
+    public function personnes()
+    {
+        return $this->belongsToMany('App\Personne', 'employes', 'id_personne', 'id_fonction');
     }
 }

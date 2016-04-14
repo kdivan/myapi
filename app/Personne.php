@@ -30,6 +30,6 @@ class Personne extends Model
 
     public function fonctions()
     {
-        return $this->belongsToMany("App\Fonction","employes","id_personne","id_fonction");
+        return $this->belongsToMany('App\Fonction');
     }
 }
