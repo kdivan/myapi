@@ -39,7 +39,7 @@ class MembreController extends Controller
 
     /**
      * @SWG\POST(path="/membre",
-     *     tags={"reductmembreion"},
+     *     tags={"membre"},
      *     summary="add 1 membre",
      *     operationId="addMembre",
      *     description="This is to insert a membre",
