@@ -213,7 +213,6 @@ class SalleController extends Controller
      *         response=404,
      *         description="Salle not found",
      *     ),
-     *     security={{"petstore_auth":{"write:salles", "read:salles"}}}
      * )
      * Update the specified resource in storage.
      *

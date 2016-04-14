@@ -257,7 +257,6 @@ class DistributeurController extends Controller
      *         response=404,
      *         description="Distributeur not found",
      *     ),
-     *     security={{"petstore_auth":{"write:distributeur", "read:distributeur"}}}
      * )
      * Update the specified resource in storage.
      *

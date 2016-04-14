@@ -57,35 +57,35 @@ class SeanceController extends Controller
      *         name="id_salle",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="id_personne_ouvreur",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="id_personne_technicien",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="id_personne_menage",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="integer",
      *     ),
      *     @SWG\Parameter(
      *         name="debut_seance",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="string",
      *         format="date-time",
      *     ),
@@ -93,7 +93,7 @@ class SeanceController extends Controller
      *         name="fin_seance",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="string",
      *         format="date-time",
      *     ),
@@ -117,13 +117,13 @@ class SeanceController extends Controller
     {
         //Validation des parametres a sauvegarder
         $validator = Validator::make($request->all(), [
-            'id_film' => 'exists:film,id_film',
-            'id_salle' => 'exists:salle,id_salle',
-            'id_personne_ouvreur' => 'exists:personne,id_personne',
-            'id_personne_technicien' => 'exists:personne,id_personne',
-            'id_personne_menage' => 'exists:personne,id_personne',
-            'debut_seance' => 'date_format:Y-m-d H:i:s|after:now|before:fin_seance',
-            'fin_seance' => 'date_format:Y-m-d H:i:s|after:debut_seance',
+            'id_film' => 'required|exists:film,id_film',
+            'id_salle' => 'required|exists:salle,id_salle',
+            'id_personne_ouvreur' => 'required|exists:personne,id_personne',
+            'id_personne_technicien' => 'required|exists:personne,id_personne',
+            'id_personne_menage' => 'required|exists:personne,id_personne',
+            'debut_seance' => 'required|date_format:Y-m-d H:i:s|after:now|before:fin_seance',
+            'fin_seance' => 'required|date_format:Y-m-d H:i:s|after:debut_seance',
         ]);
 
         if ($validator->fails()) {
@@ -271,7 +271,6 @@ class SeanceController extends Controller
      *         response=404,
      *         description="Film not found",
      *     ),
-     *     security={{"petstore_auth":{"write:films", "read:films"}}}
      * )
      * Update the specified resource in storage.
      *

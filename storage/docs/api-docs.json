@@ -240,15 +240,7 @@
                     "404": {
                         "description": "Distributeur not found"
                     }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:distributeur",
-                            "read:distributeur"
-                        ]
-                    }
-                ]
+                }
             },
             "delete": {
                 "tags": [
@@ -986,15 +978,7 @@
                     "404": {
                         "description": "Film not found"
                     }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:reductions",
-                            "read:reductions"
-                        ]
-                    }
-                ]
+                }
             },
             "delete": {
                 "tags": [
@@ -1195,15 +1179,7 @@
                     "404": {
                         "description": "Salle not found"
                     }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:salles",
-                            "read:salles"
-                        ]
-                    }
-                ]
+                }
             },
             "delete": {
                 "tags": [
@@ -1281,35 +1257,35 @@
                         "name": "id_salle",
                         "in": "formData",
                         "description": "the fields you want to update",
-                        "required": false,
+                        "required": true,
                         "type": "integer"
                     },
                     {
                         "name": "id_personne_ouvreur",
                         "in": "formData",
                         "description": "the fields you want to update",
-                        "required": false,
+                        "required": true,
                         "type": "integer"
                     },
                     {
                         "name": "id_personne_technicien",
                         "in": "formData",
                         "description": "the fields you want to update",
-                        "required": false,
+                        "required": true,
                         "type": "integer"
                     },
                     {
                         "name": "id_personne_menage",
                         "in": "formData",
                         "description": "the fields you want to update",
-                        "required": false,
+                        "required": true,
                         "type": "integer"
                     },
                     {
                         "name": "debut_seance",
                         "in": "formData",
                         "description": "the fields you want to update",
-                        "required": false,
+                        "required": true,
                         "type": "string",
                         "format": "date-time"
                     },
@@ -1317,7 +1293,7 @@
                         "name": "fin_seance",
                         "in": "formData",
                         "description": "the fields you want to update",
-                        "required": false,
+                        "required": true,
                         "type": "string",
                         "format": "date-time"
                     }
@@ -1463,15 +1439,7 @@
                     "404": {
                         "description": "Film not found"
                     }
-                },
-                "security": [
-                    {
-                        "petstore_auth": [
-                            "write:films",
-                            "read:films"
-                        ]
-                    }
-                ]
+                }
             },
             "delete": {
                 "tags": [

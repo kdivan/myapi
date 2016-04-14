@@ -219,7 +219,6 @@ class ReductionController extends Controller
      *         response=404,
      *         description="Film not found",
      *     ),
-     *     security={{"petstore_auth":{"write:reductions", "read:reductions"}}}
      * )
      * Update the specified resource in storage.
      *
