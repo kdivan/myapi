@@ -191,7 +191,7 @@ class FonctionController extends Controller
      *     ),
      *     @SWG\Parameter(
      *         name="cadre",
-     *         in="formData"
+     *         in="formData",
      *         description="Enter the new type of the fonction",
      *         required=false,
      *         type="boolean",

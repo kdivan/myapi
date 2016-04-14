@@ -62,7 +62,7 @@ class ReductionController extends Controller
      *     @SWG\Parameter(
      *         name="date_fin",
      *         in="formData",
-     *         description="Enter the ending date of the reduction,
+     *         description="Enter the ending date of the reduction",
      *         required=false,
      *         type="string",
      *     ),
