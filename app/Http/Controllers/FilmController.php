@@ -6,6 +6,7 @@ use App\Film;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 
 class FilmController extends Controller
@@ -78,7 +79,6 @@ class FilmController extends Controller
      *         description="the fields you want to update",
      *         required=false,
      *         type="string",
-     *         format="date",
      *     ),
      *     @SWG\Parameter(
      *         name="date_fin_affiche",
@@ -86,7 +86,6 @@ class FilmController extends Controller
      *         description="the fields you want to update",
      *         required=false,
      *         type="string",
-     *         format="date",
      *     ),
      *     @SWG\Parameter(
      *         name="duree_minutes",
@@ -125,7 +124,7 @@ class FilmController extends Controller
         $validator = Validator::make($request->all(), [
             'titre' => 'required|unique:films',
             'id_genre' => 'exists:genre,id_genre',
-            'id_distribution' => 'exists:genre,id_genre',
+            'id_distribution' => 'exists:distribution,id_distribution',
             'date_debut_affiche' => 'date_format:Y-m-d',
             'date_fin_affiche' => 'date_format:Y-m-d',
             'duree_minutes' => 'integer',
@@ -138,15 +137,7 @@ class FilmController extends Controller
                 422
             );
         }
-        $film = new Film();
-        $film->titre = $request->titre;
-        $film->resum = $request->resum;
-        $film->id_genre = $request->id_genre;
-        $film->id_distributeur = $request->id_distributeur;
-        $film->date_debut_affiche = $request->date_debut_affiche;
-        $film->date_fin_affiche = $request->date_fin_affiche;
-        $film->duree_minutes = $request->duree_minutes;
-        $film->annee_production = $request->annee_production;
+        $film = Film::create($request);
         $film->save();
         return response()->json(
             ['Film' => $film],
@@ -157,7 +148,7 @@ class FilmController extends Controller
     /**
      * @SWG\Get(path="/film/{filmId}",
      *      tags={"film"},
-     *      summary="show a single Film",
+     *      summary="show 1 row",
      *      operationId="getFilmById",
      *      description="Show one row",
      *      produces={"application/json"},
@@ -193,15 +184,15 @@ class FilmController extends Controller
                 400
             );
         }
-        $films = Film::find($id);
+        $film = Film::find($id);
         //Test si le film exist
-        if (empty($films)) {
+        if (empty($film)) {
             return response()->json(
-                ['error' => 'the Id supplies doesn\'t exit'],
+                ['error' => 'this film does not exist bitch'],
                 404
             );
         }
-        return $films;
+        return $film;
     }
 
     /**
@@ -301,47 +292,60 @@ class FilmController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //Validation des parametres a sauvegarder
+        $validator = Validator::make($request->all(), [
+            'titre' => 'films',
+            'id_genre' => 'exists:genre,id_genre',
+            'id_distribution' => 'exists:distribution,id_distribution',
+            'date_debut_affiche' => 'date_format:Y-m-d',
+            'date_fin_affiche' => 'date_format:Y-m-d',
+            'duree_minutes' => 'integer',
+            'annee_production' => 'integer',
+        ]);
         if (!is_numeric($id)) {
             return response()->json(
                 ['error' => 'Invalid ID supplied'],
                 400
             );
         }
-
-        $films = Film::find($id);
-        if (empty($films)) {
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->errors()->all()],
+                422
+            );
+        }
+        $film = Film::find($id);
+        if (empty($film)) {
             return response()->json(
                 ['error' => 'Film not found'],
                 404
             );
         }
-        $films->titre = $request->titre;
-        $films->resum = $request->resum;
-        $films->id_genre = $request->id_genre;
-        $films->id_distributeur = $request->id_distributeur;
-        $films->date_debut_affiche = $request->date_debut_affiche;
-        $films->date_fin_affiche = $request->date_fin_affiche;
-        $films->duree_minutes = $request->duree_minutes;
-        $films->annee_production = $request->annee_production;
-        $films->save();
+
+        $film->fill(Input::all());
+        $film->save();
+        return response()->json(
+            ['Fields have been correctly update'],
+            200
+        );
     }
 
     /**
      * @SWG\Delete(path="/film/{filmId}",
      *   tags={"film"},
-     *   summary="Delete purchase Film by ID",
+     *   summary="Delete purchase order by ID",
      *   description="For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
      *   operationId="deleteFilm",
      *   produces={"application/json"},
      *   @SWG\Parameter(
      *     name="filmId",
      *     in="path",
-     *     description="ID of the film that needs to be deleted",
+     *     description="ID of the order that needs to be deleted",
      *     required=true,
      *     type="string"
      *   ),
      *   @SWG\Response(response=400, description="Invalid ID supplied"),
-     *   @SWG\Response(response=404, description="Film not found")
+     *   @SWG\Response(response=404, description="Order not found")
      * )
      * Remove the specified resource from storage.
      *
@@ -356,14 +360,14 @@ class FilmController extends Controller
                 400
             );
         }
-        $films = Film::find($id);
-        if (empty($films)) {
+        $film = Film::find($id);
+        if (empty($film)) {
             return response()->json(
                 ['error' => 'there is no film for this id'],
                 404
             );
         }
-        $films->delete();
+        $film->delete();
         return response()->json(
             ['message' => "resource deleted successfully"],
             200
@@ -413,7 +417,8 @@ class FilmController extends Controller
                 400
             );
         }
-        $films = Film::with('Genre')->find($id);
+
+        $films = Film::find($id);
         if (empty($films)) {
             return response()->json(
                 ['error' => 'genre not found'],
@@ -421,8 +426,6 @@ class FilmController extends Controller
             );
         }
 
-        return $films;
-
+        return $films->genre;
     }
-
 }
