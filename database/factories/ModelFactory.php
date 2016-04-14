@@ -19,6 +19,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
 //Foctory forfait
 $factory->define(App\Forfait::class, function (Faker\Generator $faker) {
     return [
@@ -57,16 +58,6 @@ $factory->define(App\HistoriqueMembre::class, function (Faker\Generator $faker) 
         'date' => $faker->dateTimeThisDecade,
     ];
 });
-//Factory salles
-$factory->define(App\Salle::class, function (Faker\Generator $faker) {
-    return [
-        'id_salle' => rand(1, 20),
-        'numero_salle' => $faker->randomDigitNotNull,
-        'nom_salle' => $faker->firstNameFemale,
-        'etage_salle' => $faker->randomNumber($nbDigits = 1),
-        'places' => randomNumber($nbDigits = 3),
-    ];
-});
 //Factory seance
 $factory->define(App\Seance::class, function (Faker\Generator $faker) {
     return [
@@ -77,19 +68,6 @@ $factory->define(App\Seance::class, function (Faker\Generator $faker) {
         'id_personne_menage' => rand(1, 20),
         'debut_seance' => $faker->dateTimeThisYear,
         'fin_seance' => $faker->dateTimeThisYear,
-    ];
-});
-//Factory Personne
-$factory->define(App\Personne::class, function (Faker\Generator $faker) {
-    return [
-        'nom' => $faker->firstName,
-        'prenom' => $faker->lastName,
-        'date_naissance' => $faker->dateTimeThisCentury,
-        'email' => $faker->email,
-        'adresse' => $faker->address,
-        'cpostal' => $faker->postcode,
-        'ville' => $faker->city,
-        'pays' => $faker->country,
     ];
 });
 
