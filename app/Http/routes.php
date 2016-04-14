@@ -25,6 +25,8 @@ Route::group(['middleware' => 'jwt.auth'], function () {
         'as' => 'getFilmsForGenre',
         'uses' => 'GenreController@getFilmsForGenre'
     ]);
+
+    Route::resource('forfait', 'ForfaitController');
 });
 
 
