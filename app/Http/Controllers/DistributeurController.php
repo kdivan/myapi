@@ -124,7 +124,8 @@ class DistributeurController extends Controller
                 422
             );
         }
-        $distributeur = Distributeur::create($request);
+
+        $distributeur = Distributeur::create(Input::all());
         $distributeur->save();
         return response()->json(
             ['Distributeur' => $distributeur],

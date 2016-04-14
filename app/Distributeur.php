@@ -22,8 +22,14 @@ class Distributeur extends Model
 {
     public $primaryKey = "id_distributeur";
     public $timestamps = false;
+    /**
+     * @var array
+     */
     protected $fillable = ['nom', 'telephone', 'adresse', 'cpostal', 'ville', 'pays'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function film() {
         return $this->hasMany('App\Film', 'id_film');
     }
