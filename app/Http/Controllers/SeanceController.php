@@ -366,4 +366,44 @@ class SeanceController extends Controller
             200
         );
     }
+
+    /**
+     * @SWG\Get(
+     *     path="/seance/getNextSeances",
+     *     summary="Find all next seances",
+     *     tags={"seance"},
+     *     description="return a list of seance",
+     *     operationId="getNextSeances",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         type="integer",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="successful operation",
+     *         @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(ref="#/definitions/Seances")
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Invalid Id supplied",
+     *     ),
+     *      @SWG\Response(
+     *         response="404",
+     *         description="genre not found",
+     *     ),
+     * )
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function searchSeances(Request $request)
+    {
+
+    }
 }
