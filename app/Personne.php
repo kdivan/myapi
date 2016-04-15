@@ -32,4 +32,9 @@ class Personne extends Model
     {
         return $this->belongsToMany('App\Fonction');
     }
+
+    public function membres()
+    {
+        return $this->hasOne('App\Membres', 'id_membre');
+    }
 }

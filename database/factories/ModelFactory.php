@@ -44,9 +44,9 @@ $factory->define(App\Abonnement::class, function (Faker\Generator $faker) {
 $factory->define(App\Membre::class, function (Faker\Generator $faker) {
     return [
         'id_personne' => rand(1, 20),
-        'id_abonnement' => $faker->email,
+        'id_abonnement' => rand(1, 20),
         'date_inscription' => $faker->dateTimeThisDecade,
-        'date_abonnement' => $faker->dateTimeThisDecade,
+        'debut_abonnement' => $faker->dateTimeThisDecade,
     ];
 });
 

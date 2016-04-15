@@ -27,4 +27,9 @@ class Abonnement extends Model
         $this->belongsTo('App\Forfait', 'id_forfait');
     }
 
+    public function membres()
+    {
+        return $this->hasMany('App\Membre', 'id_membre');
+    }
+
 }

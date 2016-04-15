@@ -22,6 +22,7 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::resource('distributeur', 'DistributeurController');
         Route::resource('fonction', 'FonctionController');
         Route::resource('forfait', 'ForfaitController');
+        Route::resource('membre', 'MembreController');
         Route::resource('reduction', 'ReductionController');
         Route::resource('abonnement', 'AbonnementController');
         Route::resource('historiqueMembre', 'HistoriqueMembreController');

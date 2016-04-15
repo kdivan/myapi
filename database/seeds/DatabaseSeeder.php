@@ -20,8 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AbonnementsTableSeeder::class);
 
         $this->call(HistoriqueMembreTableSeeder::class);
-
-        //$this->call(MembresTableSeeder::class);
+        $this->call(MembresTableSeeder::class);
         $this->call(SeancesTableSeeder::class);
     }
 }

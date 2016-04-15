@@ -210,9 +210,8 @@ class MembreController extends Controller
      *     ),
      *     @SWG\Response(
      *         response=404,
-     *         description="Film not found",
+     *         description="Membre not found",
      *     ),
-     *     security={{"petstore_auth":{"write:membres", "read:membres"}}}
      * )
      * Update the specified resource in storage.
      *

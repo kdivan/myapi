@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  *  @SWG\Property(format="date", property="date_fin_affiche", type="date", default="2011-01-12"),
  *  @SWG\Property(property="duree_minutes", type="integer", default=180),
  *  @SWG\Property(property="annee_production", type="integer", default=2011),
+ *  @SWG\Property(property="genre", ref="#/definitions/Genre")
  *)
  */
 class Film extends Model
