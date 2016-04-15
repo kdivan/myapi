@@ -13,6 +13,21 @@
 
 
 Route::group(['middleware' => ['jwt.auth']], function () {
+    Route::get('seance/searchSeances', [
+        'as' => 'searchSeances',
+        'uses' => 'SeanceController@searchSeances'
+    ]);
+
+    Route::get('abonnement/getNumberAboonnementByForfait/{forfaitId}', [
+        'as' => 'getNumberAboonnementByForfait',
+        'uses' => 'AbonnementController@getNumberAboonnementByForfait'
+    ]);
+
+    Route::get('historiqueMembre/getNumberEntry', [
+        'as' => 'getNumberEntry',
+        'uses' => 'HistoriqueMembreController@getNumberEntry'
+    ]);
+
     Route::group(['middleware' => ['roles:ROLE_CRUD']], function () {
         Route::resource('film', 'FilmController');
         Route::resource('genre', 'GenreController');
@@ -36,6 +51,8 @@ Route::group(['middleware' => ['jwt.auth']], function () {
             'as' => 'getFilmsForGenre',
             'uses' => 'GenreController@getFilmsForGenre'
         ]);
+
+
     });
 
     Route::group(['middleware' => ['roles:ROLE_READONLY']], function () {
@@ -70,6 +87,11 @@ Route::group(['middleware' => ['jwt.auth']], function () {
         Route::get('genre/getFilmsForGenre/{id}', [
             'as' => 'getFilmsForGenre',
             'uses' => 'GenreController@getFilmsForGenre'
+        ]);
+
+        Route::get('seance/searchSeances', [
+            'as' => 'searchSeances',
+            'uses' => 'SeanceController@searchSeances'
         ]);
     });
 

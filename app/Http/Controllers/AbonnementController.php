@@ -284,4 +284,57 @@ class AbonnementController extends Controller
             200
         );
     }
+
+    /**
+     * @SWG\Get(
+     *     path="/abonnement/getNumberAboonnementByForfait",
+     *     summary="Get number abonnement by forfait",
+     *     tags={"abonnement"},
+     *     description="return number of abonnement",
+     *     operationId="getNumberAboonnementByForfait",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="forfaitId",
+     *         in="path",
+     *         required=true,
+     *         type="integer",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="successful operation",
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Invalid Id supplied",
+     *     ),
+     *      @SWG\Response(
+     *         response="404",
+     *         description="genre not found",
+     *     ),
+     * )
+     */
+    public function getNumberAboonnementByForfait($forfaitId)
+    {
+        if (!is_numeric($forfaitId)) {
+            return response()->json(
+                ['error' => 'Invalid ID supplied'],
+                400
+            );
+        }
+        $abonnements = Abonnement::where('id_forfait', '=', $forfaitId)
+                            ->count();
+
+        if (empty($abonnements)) {
+            return response()->json(
+                ['error' => 'there is no abonnement for this id'],
+                404
+            );
+        }
+
+        return response()->json(
+            ['abonnements' => $abonnements],
+            200
+        );
+    }
 }

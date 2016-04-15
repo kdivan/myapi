@@ -369,18 +369,61 @@ class SeanceController extends Controller
 
     /**
      * @SWG\Get(
-     *     path="/seance/getNextSeances",
-     *     summary="Find all next seances",
+     *     path="/seance/searchSeances",
+     *     summary="Search seances",
      *     tags={"seance"},
      *     description="return a list of seance",
      *     operationId="getNextSeances",
      *     consumes={"application/json"},
      *     produces={"application/json"},
      *     @SWG\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
+     *         name="id_film",
+     *         in="query",
+     *         description="Enter the film id of the seance",
+     *         required=false,
      *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="id_salle",
+     *         in="query",
+     *         description="Enter the salle id of the seance",
+     *         required=false,
+     *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="id_personne_ouvreur",
+     *         in="query",
+     *         description="Enter the personne ouvreur id of the seance",
+     *         required=false,
+     *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="id_personne_technicien",
+     *         in="query",
+     *         description="Enter the technicien id of the seance",
+     *         required=false,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="id_personne_menage",
+     *         in="query",
+     *         description="Enter the personne menage id of the seance",
+     *         required=false,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="debut_seance",
+     *         in="query",
+     *         description="Enter the starting time of the seance",
+     *         required=false,
+     *         type="string",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="fin_seance",
+     *         in="query",
+     *         description="Enter the ending time of the seancee",
+     *         required=false,
+     *         type="string",
      *     ),
      *     @SWG\Response(
      *         response=200,
@@ -396,14 +439,54 @@ class SeanceController extends Controller
      *     ),
      *      @SWG\Response(
      *         response="404",
-     *         description="genre not found",
+     *         description="seance not found",
      *     ),
      * )
-     * @param  int $id
-     * @return \Illuminate\Http\Response
      */
     public function searchSeances(Request $request)
     {
+        \DB::enableQueryLog();
 
+
+        $filters = ['id_film', 'id_salle', 'id_personne_ouvreur',
+                    'id_personne_technicien', 'id_personne_menage'];
+
+        //Validation des parametres a sauvegarder
+        $validator = Validator::make($request->all(), [
+            'id_film' => 'exists:films,id_film',
+            'id_salle' => 'exists:salles,id_salle',
+            'id_personne_ouvreur' => 'exists:personnes,id_personne',
+            'id_personne_technicien' => 'exists:personnes,id_personne',
+            'id_personne_menage' => 'exists:personnes,id_personne',
+            'debut_seance' => 'required_without:fin_seance|date_format:Y-m-d H:i:s|before:fin_seance',
+            'fin_seance' => 'required_without:debut_seance|date_format:Y-m-d H:i:s|after:debut_seance',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->errors()->all()],
+                422
+            );
+        }
+
+        $res = Seance::whereNotNull('id');
+        foreach($filters as $filter) {
+            if (null !== $request->$filter) {
+                $res->where($filter, '=', $request->$filter);
+            }
+        }
+
+        $res
+            ->where(function($query) use ($request) {
+                $query->where('debut_seance', '>=', $request->debut_seance);
+            });
+
+        $result = $res->get();
+
+        var_dump(\DB::getQueryLog());
+        return response()->json(
+            ['result' => $result],
+            200
+        );
     }
 }

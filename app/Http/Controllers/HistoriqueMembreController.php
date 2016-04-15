@@ -303,4 +303,119 @@ class HistoriqueMembreController extends Controller
             200
         );
     }
+
+    /**
+     * @SWG\Get(
+     *     path="/historiqueMembre/getNumberEntry",
+     *     summary="Get number entry",
+     *     tags={"historiqueMembre"},
+     *     description="return number entry by filter",
+     *     operationId="getNumberEntry",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="id_film",
+     *         in="query",
+     *         description="Id film",
+     *         required=false,
+     *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="id_distributeur",
+     *         in="query",
+     *         description="Id distributeur",
+     *         required=false,
+     *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="id_genre",
+     *         in="query",
+     *         description="Id genre",
+     *         required=false,
+     *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="date_seance",
+     *         in="query",
+     *         description="Enter seance date",
+     *         required=false,
+                type="string",
+     *         format="date-time",
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="successful operation",
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Invalid Id supplied",
+     *     ),
+     *      @SWG\Response(
+     *         response="404",
+     *         description="seance not found",
+     *     ),
+     * )
+     */
+    public function getNumberEntry(Request $request)
+    {
+        \DB::enableQueryLog();
+
+        $filters = ['id_film', 'id_distributeur', 'id_genre',
+            'date_seance'];
+
+        //Validation des parametres a sauvegarder
+        $validator = Validator::make($request->all(), [
+            'id_film' => 'exists:films,id_film',
+            'id_distributeur' => 'exists:distributeurs,id_distributeur',
+            'id_genre' => 'exists:genres,id_genre',
+            'date_seance' => 'date_format:Y-m-d H:i:s',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->errors()->all()],
+                422
+            );
+        }
+
+        $query = HistoriqueMembre::whereNotNull('historique_membre.id_historique');
+        var_dump(\DB::getQueryLog());
+
+        $query->join('seances', 'historique_membre.id_seance', '=', 'seances.id');
+
+        if (null !== $request->id_film) {
+            $query->join('films', function($join) use ($request) {
+                $join->on('seances.id_film', '=', 'films.id_film')
+                    ->where('films.id_film', '=', $request->id_film);
+            });
+        } elseif (null !== $request->id_distributeur) {
+            $query->join('films','seances.id_film', '=', 'films.id_film');
+            $query->join('distributeurs', function($join) use ($request) {
+                $join->on('films.id_distributeur', '=', 'distributeurs.id_distributeur')
+                    ->where('distributeurs.id_distributeur', '=', $request->id_distributeur);
+            });
+        } elseif (null !== $request->id_genre) {
+            $query->join('films', 'seances.id_film', '=', 'films.id_film');
+            $query->join('distributeurs', function ($join) use ($request) {
+                $join->on('films.id_distributeur', '=', 'distributeurs.id_distributeur')
+                    ->where('distributeurs.id_distributeur', '=', $request->id_distributeur);
+            });
+        }
+
+        var_dump(\DB::getQueryLog());
+
+        $nbEntrees = $query->count();
+
+        if (empty($nbEntrees)) {
+            return response()->json(
+                ['error' => 'there is no entrees'],
+                404
+            );
+        }
+
+        return response()->json(
+            ['entries' => $nbEntrees],
+            200
+        );
+    }
 }
