@@ -63,17 +63,17 @@ class MembreController extends Controller
      *         name="date_inscription",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="string",
-     *         format="date",
+     *         format="date-time",
      *     ),
      *     @SWG\Parameter(
      *         name="debut_abonnement",
      *         in="formData",
      *         description="the fields you want to update",
-     *         required=false,
+     *         required=true,
      *         type="string",
-     *         format="date",
+     *         format="date-time",
      *     ),
      *      @SWG\Response(
      *          response=201,
@@ -110,7 +110,7 @@ class MembreController extends Controller
         $membres = Membre::create(Input::all());
         $membres->save();
         return response()->json(
-            ['Membre' => $membres],
+            $membres,
             201
         );
     }

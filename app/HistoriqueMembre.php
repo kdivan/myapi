@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
  *  @SWG\Property(property="id_membre", type="integer"),
  *  @SWG\Property(property="id_seance", type="integer"),
  *  @SWG\Property(property="date", type="string", format="date-time"),
- *  @SWG\Property(property="membre", ref="#/definitions/Membre"),
  *)
  */
 class HistoriqueMembre extends Model

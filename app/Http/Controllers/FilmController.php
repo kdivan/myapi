@@ -18,6 +18,30 @@ class FilmController extends Controller
      *   summary="Display a list of films.",
      *   description="This can only be done by the logged in user.",
      *   produces={"application/json"},
+     *              *     @SWG\Parameter(
+     *         description="Force l'affichage de tous les éléments.",
+     *         in="query",
+     *         name="all",
+     *         type="boolean"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="Le nombre d'éléments à afficher",
+     *         in="query",
+     *         name="nb_element",
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="La page à afficher",
+     *         in="query",
+     *         name="page",
+     *         type="integer"
+     *     ),
+     *     @SWG\Parameter(
+     *         description="filtre par genre",
+     *         in="query",
+     *         name="id_genre",
+     *         type="integer"
+     *     ),
      *   @SWG\Response(
      *     response=200,
      *     description="successful operation",
@@ -31,9 +55,57 @@ class FilmController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $films = Film::all()->take(5);
+        $validator = Validator::make($request->all(), [
+            'all' => 'string',
+            'nb_element' => 'numeric',
+            'id_genre' => 'numeric|exists:genres',
+            'id_distributeur' => 'numeric|exists:distributeurs'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->errors()->all()],
+                422); // HTTP Status code
+        }
+
+        // On check si on doit tout afficher.
+        if (!empty($request->all) && $request->all === 'true')
+        {
+            $films = Film::all();
+        }
+        else
+        {
+            // Afficher 15 elements par défaut.
+
+            $nb_element = 15;
+
+            if (!empty($request->nb_element))
+            {
+                $nb_element = $request->nb_element;
+            }
+
+            $films = Film::paginate($nb_element);
+        }
+
+        if (!empty($request->id_genre))
+        {
+            $id_genre = (int) $request->id_genre;
+            $films = $films->where('id_genre', $id_genre);
+        }
+
+        if (!empty($request->id_distributeur))
+        {
+            $id_distributeur = (int) $request->id_distributeur;
+            $films = $films->where('id_distributeur', $id_distributeur);
+        }
+
+        if ($films->count() === 0)
+        {
+            return response()->json([],204);
+        }
+
         return $films;
     }
 
